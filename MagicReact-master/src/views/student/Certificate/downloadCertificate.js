@@ -46,30 +46,6 @@ const downloadCertificate = () => {
             <Button className='me-1' color='primary' type='button'><i className="fa fa-download"></i>&nbsp;Download</Button>
          </div>
       </div>
-      // <div key={index}>
-      //   <div className="mt-4 d-flex justify-content-center parent" style={{margin: "20px", marginTop:'0px'}}>
-      //   <div id="to_save2" className="img-fluid">
-      //   <div style={{padding: "20px", textAlign: "center"}}>
-      //   <div style={{fontSize: "40px", marginTop: "390px", fontFamily: "Bad script", fontWeight: "600", letterSpacing: "1px"}}>
-      //   <Label style={{marginTop: "50px", fontSize: "25px", fontWeight: "800"}}>{cd.StudentName}</Label> <br/><br/>
-      //   <p style={{marginTop:" 20px", lineHeight: "4.5rem", height: "200px", fontFamily: "Montserrat", fontSize: "20px", fontWeight: "500"}}>
-      //   for completing the&nbsp; 
-      //   <Label style={{marginTop: "50px", fontSize: "25px", fontWeight: "800"}}>{cd.CertificateName}</Label><br/>
-      //   module of the &nbsp;
-      //   <Label className="d-flex justify-content-center" style={{color: "#2c7872"}}>{cd.ModuleName}</Label>        
-      //   </p>
-      // </div>
-      // <p style={{marginTop: "60px", marginLeft: "630px", fontFamily: "montserrat", fontSize: "20px", color: "#ed803"}}>
-      // <Label>{cd.Date}</Label>
-      //   </p>
-      // </div> 
-      // </div>
-      //   </div>
-      //   <br />
-      //   <div className="mb-4 d-flex justify-content-center" style={{margin:"20px"}}>
-      //       <Button className='me-1' color='primary' type='button'><i className="fa fa-download"></i>&nbsp;Download</Button>
-      //   </div>
-      //   </div>
     ))
     }
     </div>
