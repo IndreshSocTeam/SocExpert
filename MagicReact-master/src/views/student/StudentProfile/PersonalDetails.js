@@ -33,7 +33,8 @@ const intitalInsertValues = {
 
 const PersonalDetailsTabs = () => { 
   
-const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
+const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+
 const [insertValues, setInsertValues] = useState([])
 const [errors, setErrors] = useState({})
 

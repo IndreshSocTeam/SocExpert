@@ -75,7 +75,7 @@ const MyRequestActivityTimeLinePage = () => {
 
   const saveChangesClick = (e) => {
     e.preventDefault()
-    if (true) {        
+    if (validate()) {        
       axiosClient.post(`Request/AddNote?Comment=${comments.comment}&UserId=${loggedInUserDetails.StudentId}&TypeId=1&TicketNumber=${ticketNumberid}`).then((res) => {
         console.log('AddNote',  res.data)
       axiosClient.post(`/Request/AddAttachment?UserId=${loggedInUserDetails.StudentId}&RequestName=${CVfile.CVFileName}&RequestPath=${CVfile.CVbaseUrl}`).then((res2) => {      
