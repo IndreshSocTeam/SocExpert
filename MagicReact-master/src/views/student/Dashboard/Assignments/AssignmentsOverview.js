@@ -1,21 +1,36 @@
-import { Card, CardHeader, CardTitle, CardBody, CardText, Row, Col, UncontrolledDropdown, DropdownMenu, DropdownItem, DropdownToggle } from 'reactstrap'
+import { Card, CardHeader, CardTitle, CardBody, UncontrolledDropdown, DropdownMenu, DropdownItem, DropdownToggle, UncontrolledTooltip } from 'reactstrap'
 
 import { useEffect, useState } from 'react'
 import {axiosClient} from '../../../../Client'
 
+
+import ClipLoader from "react-spinners/ClipLoader"
 import Chart from 'react-apexcharts'
+
+const override: CSSProperties = {
+  display:"block",
+  margin:"auto",
+  left:"0",
+  right:"0%",
+  bottom:"0",
+  top:"0",
+  position: "absolute",
+};
+
 
 import { Circle } from 'react-feather'
 
 const AssignmentsOverview = () => {
     // ** State
-    const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
+    const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
     const [dashboardScores, setDashboardScores] = useState([])
+    const [loading, setLoading] = useState(false)
   
     useEffect(() => {
+      setLoading(true)
         axiosClient.get(`Dashboard/getStudentDashboard?StudentId=${loggedInUserDetails.StudentId}`).then((res) => {
             setDashboardScores([res.data])
-          console.log('dashboad',  res.data)
+          setLoading(false)
         }).catch((error) => {
           console.log(error)
         })
@@ -74,7 +89,7 @@ const AssignmentsOverview = () => {
       //series = [70, 52, 26]
   
     return (
-      <Card>
+      <Card id='AssignmentOverview'>
         <CardHeader>
           <CardTitle tag='h4'>Assignments</CardTitle>
           <UncontrolledDropdown className='chart-dropdown'>
@@ -87,10 +102,19 @@ const AssignmentsOverview = () => {
             </DropdownMenu>
           </UncontrolledDropdown>
         </CardHeader>
+        <ClipLoader
+        color={"#6610f2"}
+        loading={loading}
+        cssOverride={override}
+        size={40}
+        aria-label="Loading Spinner"
+        data-testid="loader"
+        speedMultiplier="1"
+      />
         {
             dashboardScores.map((getAssgnScores, index) => (
-        <CardBody>
-          <Chart options={options} key={index} series={[getAssgnScores.AssignementsCompletedByStudent, getAssgnScores.TotalAssignements - getAssgnScores.AssignementsCompletedByStudent, getAssgnScores.TotalAssignements]} type='radialBar' height={325} />
+        <CardBody key={index}>
+          <Chart options={options} series={[getAssgnScores.AssignementsCompletedByStudent, getAssgnScores.TotalAssignements - getAssgnScores.AssignementsCompletedByStudent, getAssgnScores.TotalAssignements]} type='radialBar' height={325} />
           <div className='d-flex justify-content-between mb-1'>
             <div className='d-flex align-items-center'>
               <Circle size={15} className='text-primary' />
@@ -115,6 +139,10 @@ const AssignmentsOverview = () => {
         </CardBody>  
         ))
     } 
+    
+  <UncontrolledTooltip placement='top' target='AssignmentOverview'>
+  Assignments Overview
+</UncontrolledTooltip> 
       </Card>
     )
 }

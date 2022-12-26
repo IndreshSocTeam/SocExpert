@@ -1,22 +1,33 @@
-import { Card, CardHeader, CardTitle, CardBody, CardText, Row, Col } from 'reactstrap'
+import { Card,  CardBody, Row, Col, UncontrolledTooltip } from 'reactstrap'
 
+import { useEffect, useState,CSSProperties } from 'react'
 
 import {axiosClient} from '../../../../Client'
-import Chart from 'react-apexcharts'
-// ** Styles
 import '@src/@core/scss/react/libs/charts/apex-charts.scss'
+import ClipLoader from "react-spinners/ClipLoader"
+import Chart from 'react-apexcharts'
 
-import { useEffect, useState } from 'react'
+const override: CSSProperties = {
+  display:"block",
+  margin:"auto",
+  left:"0",
+  right:"0%",
+  bottom:"0",
+  top:"0",
+  position: "absolute",
+};
 
 const RequestByTypeOverview = () => {
 
-    const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
+    const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
     const [requestScores, setRequestScores] = useState([])
+    const [loading, setLoading] = useState(false)
   
     useEffect(() => {
+      setLoading(true)
         axiosClient.get(`Dashboard/getStudentDashboard?StudentId=${loggedInUserDetails.StudentId}`).then((res) => {
             setRequestScores([res.data])
-          console.log('Request Scores',  res.data)
+          setLoading(false)
         }).catch((error) => {
           console.log(error)
         })
@@ -171,14 +182,22 @@ const RequestByTypeOverview = () => {
              
         return (          
           <div>
-                   
+               
+         <ClipLoader
+         color={"#6610f2"}
+         loading={loading}
+         cssOverride={override}
+         size={40}
+         aria-label="Loading Spinner"
+         data-testid="loader"
+         speedMultiplier="1"
+       />    
          {
           requestScores.map((getRequestScores, index) => (
-         <Row>
+         <Row key={index} >
          <Col lg='12'>
-        
          <Card>
-                <CardBody>
+                <CardBody id='AvgMock'>
                     <h5>Mock Score</h5>
                     <br/>
                     <Row>
@@ -187,15 +206,19 @@ const RequestByTypeOverview = () => {
                         <p>Rquests</p>
                         </Col>
                         <Col style = {{marginTop : -30}}>
-                        <Chart key={index} options={AvgMockOptions} series={[getRequestScores.AverageMockScore]} type='radialBar' height={135} />         
+                        <Chart options={AvgMockOptions} series={[getRequestScores.AverageMockScore]} type='radialBar' height={135} />         
        <p className='text-center'>Average Mock Score</p>
                         </Col>
                     </Row>
-                </CardBody>
+                </CardBody>              
+ 
+<UncontrolledTooltip placement='top' target='AvgMock'>
+Your Average Mock Scores
+</UncontrolledTooltip> 
             </Card>
             </Col>
             <Col lg='12'>
-            <Card>
+            <Card id='RequestTypes'>
                 <CardBody>
                     <h5>Requests by Type</h5>  
                     
@@ -214,14 +237,20 @@ const RequestByTypeOverview = () => {
                  <span>CV Review - {getRequestScores.CVReview}</span>
              </div>
                 </CardBody>
+                <UncontrolledTooltip placement='top' target='RequestTypes'>
+                Your Total Requests
+              </UncontrolledTooltip> 
             </Card>
             </Col>            
             </Row>
             ))
           }
+           
             </div>
         )
       }
 
   
   export default RequestByTypeOverview
+
+

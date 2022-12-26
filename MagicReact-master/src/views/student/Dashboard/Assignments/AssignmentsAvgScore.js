@@ -1,19 +1,32 @@
-import { Card, CardHeader, CardTitle, CardBody, CardText, Row, Col, UncontrolledDropdown, DropdownMenu, DropdownItem, DropdownToggle } from 'reactstrap'
+import { Card, CardHeader, CardTitle, CardBody, Row, Col, UncontrolledTooltip } from 'reactstrap'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, CSSProperties } from 'react'
 import {axiosClient} from '../../../../Client'
 
+import ClipLoader from "react-spinners/ClipLoader"
 import Chart from 'react-apexcharts'
+
+const override: CSSProperties = {
+  display:"block",
+  margin:"auto",
+  left:"0",
+  right:"0%",
+  bottom:"0",
+  top:"0",
+  position: "absolute",
+};
 
 const AssignmentsAverageScore = () => {
     // ** State
-    const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
+    const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
     const [dashboardScores, setDashboardScores] = useState([])
+    const [loading, setLoading] = useState(false)
   
     useEffect(() => {
+      setLoading(true)
         axiosClient.get(`Dashboard/getStudentDashboard?StudentId=${loggedInUserDetails.StudentId}`).then((res) => {
             setDashboardScores([res.data])
-          console.log('Average Assignments score',  res.data)
+         setLoading(false)
         }).catch((error) => {
           console.log(error)
         })
@@ -82,29 +95,41 @@ const AssignmentsAverageScore = () => {
         }
       }
          
-      //series = [83]
-      
+      //series = [83]getAssgnScores.AverageAssignmentScore
     return (
-        <Card>
+        <Card id='Avg'>
         <CardHeader>
         <CardTitle tag='h4'>Assignments Scores</CardTitle>
         </CardHeader>
+        <ClipLoader
+         color={"#6610f2"}
+         loading={loading}
+         cssOverride={override}
+         size={40}
+         aria-label="Loading Spinner"
+         data-testid="loader"
+         speedMultiplier="1"
+       />
         <CardBody>           
       {
         dashboardScores.map((getAssgnScores, index) => (
-        <Row>       
+        <Row key={index}>       
                     <Col>
                     <h2>{getAssgnScores.AssignementsCompletedByStudent}</h2>
                     <p>Submitted</p>
                     </Col>
                     <Col style = {{marginTop : -30}}>                        
-          <Chart key={index} options={options} series={[getAssgnScores.AverageAssignmentScore]} type='radialBar' height={135} />         
+          <Chart options={options} series={[getAssgnScores.AverageAssignmentScore]} type="radialBar" height={135} />         
         <p className='text-center'>Average Score</p>
         </Col>
     </Row>
     ))
 } 
         </CardBody>
+        
+  <UncontrolledTooltip placement='top' target='Avg'>
+  Your Assignments Average Scores
+</UncontrolledTooltip> 
         </Card>
     ) 
   }

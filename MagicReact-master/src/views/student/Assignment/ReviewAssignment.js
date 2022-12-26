@@ -5,20 +5,41 @@ import { Link } from 'react-router-dom'
 
 import {axiosClient} from '../../../Client'
 
-import { Fragment, useState, useEffect} from 'react'
+import { Fragment, useState, useEffect, CSSProperties} from 'react'
 // ** Icons Imports
 import { MoreVertical, Edit, Trash } from 'react-feather'
 
+import {toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 // ** Reactstrap Imports
-import {  Row, Col, Form, Card, Table, Badge, UncontrolledDropdown, DropdownMenu, DropdownItem, DropdownToggle } from 'reactstrap'
-
+import {  Row, Col, Form, Card, Table, Badge } from 'reactstrap'
 
 import DataTable from "react-data-table-component"
 
 import Breadcrumbs from '@components/breadcrumbs'
 
+import HashLoader from "react-spinners/HashLoader"
+
+const override: CSSProperties = {
+  display:"block",
+  margin: "auto",
+  position: "absolute",
+  top: "0%",
+  left: "0%",
+  right:"0%",
+  bottom:"0%",
+  transform: "rotate(180deg)",
+  opacity:"0.8",
+  // width:"100%",
+  // height:"100%",
+  // background:'rgb(235 245 245)',
+  zIndex:'100'
+}
+
+
+const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+
 const ReviewAssignmentTable = () => {
-  const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
   const [assignment, setAssignment] = useState([])  
   const [assignmentId, setAssignmentId] = useState('')
   
@@ -27,26 +48,31 @@ const ReviewAssignmentTable = () => {
   const [search, setSearch] =  useState("")  
   const [filterTable, setfilterTable] =  useState([])
 
+  const [loading, setLoading] =  useState([])
+
   const handleAssignmentChange = e => {
     const assId = e.target.value
     setAssignmentId(assId)    
-  console.log("change assId", assId)  
+    setLoading(true) 
  // axiosClient.get(`Request/getStudentAssignementOnId?StudentId=771&assignamentId=11`)
   axiosClient.get(`Assignment/getPeerAssignementsOnAssignmentId?StudentId=${loggedInUserDetails.StudentId}&AssignementId=${assId}`).then((AssPeerTableRes) => {
+    setLoading(false)
     setPeerAssignmentTable(AssPeerTableRes.data)   
     setfilterTable(AssPeerTableRes.data)     
-    console.log("Peer Assignment Table", AssPeerTableRes.data)
     }).catch((error) => {
-      console.log(error)
+      //console.log(error)
+  toast.error('Internal server error')
     })
   }
 
   useEffect(() => {
+    setLoading(true)
     axiosClient.get(`Assignment/getAllActiveAssignmentOnStudentId?StudentId=${loggedInUserDetails.StudentId}`).then((PeerAssignmentRes) => {
+      setLoading(false)
       setAssignment(PeerAssignmentRes.data)      
-      console.log('Peer Assignment',  PeerAssignmentRes.data)
     }).catch((error) => {
-      console.log(error)
+      //console.log(error)
+      toast.error('Internal server error')
     })
   }, [assignmentId])
 
@@ -87,7 +113,7 @@ const ReviewAssignmentTable = () => {
           </Badge>
         ) : (
           <Badge color='light-warning' pill>
-            Paid
+          {row.Score}
           </Badge>
         )
       },
@@ -105,6 +131,15 @@ const ReviewAssignmentTable = () => {
 
   return (
     <Fragment>
+    <HashLoader
+      color={"#5856d6"}
+      loading={loading}
+      cssOverride={override}
+      size={100}
+      aria-label="Loading Spinner"
+      data-testid="loader"
+      speedMultiplier="1"
+    />
     <Card className='py-2 my-25 p-2'>
       <Row>
       <Col lg='4' >
@@ -114,7 +149,7 @@ const ReviewAssignmentTable = () => {
       className='form-control'
       placeholder='Select-Assignment'
       onChange={handleAssignmentChange}
-    > <option>Select Assignment</option>
+    > <option> -- Select Assignment -- </option>
     {
       assignment.map((getAssignment, index) => (
         <option key={index} value={getAssignment.Id}>{getAssignment.Name}</option>

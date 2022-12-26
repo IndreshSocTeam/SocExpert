@@ -1,21 +1,33 @@
-import { Card, CardBody, Col, Progress, Row } from 'reactstrap'
+import { Card, CardBody, Progress, UncontrolledTooltip } from 'reactstrap'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, CSSProperties } from 'react'
 import {axiosClient} from '../../../Client'
+import ClipLoader from "react-spinners/ClipLoader"
+
+const override: CSSProperties = {
+  display:"block",
+  margin:"auto",
+  left:"0",
+  right:"0%",
+  bottom:"0",
+  top:"0",
+  position: "absolute",
+};
 
 const ProgressBarDashboard = () => {
 
-    const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
+    const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+    const [loading, setLoading] = useState(false)
     const [progressBarStudent, setProgressBarStudent] = useState([])
     const [progressBarBatch, setProgressBarBatch] = useState([])
   
     useEffect(() => {
+      setLoading(true)
         axiosClient.get(`Dashboard/GetStudnetProgressNumberForDashboard?StudentId=${loggedInUserDetails.StudentId}`).then((res) => {
             setProgressBarStudent([res.data])
-          console.log('Progress Bar for Student',  res.data)
           axiosClient.get(`Dashboard/GetBatchProgressNumberForDashboard?StudentId=${loggedInUserDetails.StudentId}`).then((res1) => {
+            setLoading(false)
             setProgressBarBatch([res1.data])
-            console.log('Progress Bar for Batch',  res1.data)
           })
         }).catch((error) => {
           console.log(error)
@@ -23,10 +35,24 @@ const ProgressBarDashboard = () => {
     }, [])
   
   return (
-    <Card>
+   <div> 
+   
+    <Card id='progress'>
       <CardBody>
         <h5>Your Progress</h5>
         <br/>
+        {
+          loading ? (
+            <ClipLoader
+         color={"#6610f2"}
+         loading={loading}
+         cssOverride={override}
+         size={40}
+         aria-label="Loading Spinner"
+         data-testid="loader"
+         speedMultiplier="1"
+       />
+          ) : (
       <Progress multi>
       {
         progressBarStudent.map((getprogressBarStudent, index) => (
@@ -43,7 +69,10 @@ const ProgressBarDashboard = () => {
       
       ))
     }
-    </Progress>
+    </Progress>    
+
+    )
+   }
     <br/>
         <div className='d-flex align-items-center me-2 d-inline'>
             <span className='bullet bullet-success me-50'></span>
@@ -54,7 +83,11 @@ const ProgressBarDashboard = () => {
              <span>Your batch</span>
          </div>
     </CardBody>
-    </Card>
+    </Card>    
+    <UncontrolledTooltip placement='top' target='progress'>
+    Check Your Progress
+  </UncontrolledTooltip>  
+    </div>
   )
 }
 export default ProgressBarDashboard

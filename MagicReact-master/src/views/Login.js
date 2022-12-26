@@ -1,7 +1,8 @@
 import { useSkin } from '@hooks/useSkin'
 import { useState, CSSProperties} from 'react'
 import { Link, useHistory} from 'react-router-dom'
-import { Row, Col, CardTitle, CardText, Form, Label, Input, Button, FormFeedback } from 'reactstrap'
+import { Row, Col, CardTitle, CardText, Form, Label, Input, Button, InputGroup, InputGroupText } from 'reactstrap'
+import {User, Lock } from 'react-feather'
 import InputPasswordToggle from '@components/input-password-toggle'
 import '@styles/react/pages/page-authentication.scss'
 import 'cleave.js/dist/addons/cleave-phone.us'
@@ -156,7 +157,6 @@ const initialValues = {
           <div className='w-100 d-lg-flex align-items-center justify-content-center px-5'>
             <img className='img-fluid' src={source} alt='Login Cover' />            
             <HashLoader
-
             color={"#5856d6"}
             loading={loading}
             cssOverride={override}
@@ -178,7 +178,12 @@ const initialValues = {
                 <Label className='form-label' for='EmailAddress'>
                   Email
                 </Label>
+                <InputGroup className='mb-2'>
+          <InputGroupText>
+            <User size={14} />
+          </InputGroupText> 
                 <Input className={applyErrorClass('EmailAddress')} type='email' id='EmailAddress' placeholder='socexpert.com' value={data.EmailAddress} onChange={(e) => handle(e)} />
+                </InputGroup>
                 { errors.EmailAddress === false ? <span className='text-danger'>Please Enter the EmailAddress</span> : ""}
                 </div>
               <div className='mb-1'>
@@ -190,7 +195,8 @@ const initialValues = {
                     <small>Forgot Password?</small>
                   </Link>
                 </div>
-                <InputPasswordToggle type='password' className={applyErrorClass('Password')} id='Password' value={data.Password} onChange={(e) => handle(e)}/>
+                <InputPasswordToggle className={applyErrorClass('Password')} id='Password' value={data.Password} onChange={(e) => handle(e)}/>
+                
                 { errors.Password === false ? <span className='text-danger'>Please Enter the Password</span> : ""}
                 </div>
               <div className='form-check mb-1'>

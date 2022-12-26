@@ -1,14 +1,9 @@
 // ** React Imports
-import { Fragment, useState, useEffect} from 'react'
+import { Fragment, useState, useEffect, CSSProperties} from 'react'
 
-// ** Third Party Components
-//import axios from 'axios'
-import Select from 'react-select'
 
-import { Link } from 'react-router-dom'
-
-import { MoreVertical, Edit, Trash } from 'react-feather'
-
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 import {axiosClient} from '../../../Client'
 // ** Reactstrap Imports
@@ -22,6 +17,26 @@ import '@styles/react/pages/page-account-settings.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import DataTable from "react-data-table-component"
  
+import HashLoader from "react-spinners/HashLoader"
+
+const override: CSSProperties = {
+  display:"block",
+  margin: "auto",
+  position: "absolute",
+  top: "0%",
+  left: "0%",
+  right:"0%",
+  bottom:"0%",
+  transform: "rotate(180deg)",
+  opacity:"0.8",
+  // width:"100%",
+  // height:"100%",
+  // background:'rgb(235 245 245)',
+  zIndex:'100'
+}
+
+const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+
 const CSIQsearch = () => {
   const [btnCompany, setbtnCompany] = useState([])
 
@@ -33,19 +48,21 @@ const CSIQsearch = () => {
 
   const [search, setSearch] =  useState("")  
   const [filterTable, setfilterTable] =  useState([])
+  const [loading, setLoading] = useState(false)
 
   const onChangeSearch = (e) => {
     const {name, value} = e.target
-    setCSIQsearch({...CSIQSearch, [name]:value})    
-    console.log("CSIQ search", CSIQSearch)   
+    setCSIQsearch({...CSIQSearch, [name]:value}) 
   }
 
   useEffect(() => {
+    setLoading(true)
     axiosClient.get('CSIQ/getTopCompanies').then((res) => {
+      setLoading(false)
       setbtnCompany(res.data)      
-      console.log('Get All Top Companies', res.data)
     }).catch((error) => {
-      console.log(error)
+      //console.log(error)
+      toast.error('Internal server error')
     })
   }, [])
 
@@ -53,26 +70,29 @@ const CSIQsearch = () => {
   const onClickSearch = (e) => {
     e.preventDefault() // fetch  CSIQ table on filter
     const company = CSIQSearch.company
-    const role = CSIQSearch.role
-    { (company !== undefined && role !== "0") ? axiosClient.get(`CSIQ/GetDataonCompanyAndRoleSearch?CompanyName=${company}&Role=${role}`).then((res1) => {
-          setCSIQtable(res1.data)          
+    const role = CSIQSearch.role    
+    setLoading(true)
+    { 
+      (company !== undefined && role !== "0") ? axiosClient.get(`CSIQ/GetDataonCompanyAndRoleSearch?CompanyName=${company}&Role=${role}`).then((res1) => {
+      setCSIQtable(res1.data)          
           setfilterTable(res1.data)  
-          console.log('filter CSIQ search condtion 1', res1.data)
         }).catch((error) => {
-          console.log(error)
+         // console.log(error)
         }) : company !== undefined ? axiosClient.get(`CSIQ/GetDataonCompanySearch?CompanyName=${company}`).then((res2) => {
       setCSIQtable(res2.data)          
       setfilterTable(res2.data)  
-      console.log('filter CSIQ search condtion 2', res2.data)
     }).catch((error) => {
-      console.log(error)
+     // console.log(error)
     }) : role !== undefined ? axiosClient.get(`CSIQ/GetDataonRoleSearch?Role=${role}`).then((res3) => {
       setCSIQtable(res3.data)          
       setfilterTable(res3.data)  
-      console.log('filter CSIQ search condtion 3', res3.data)
     }).catch((error) => {
       console.log(error)
-    }) : console.log("Not Found") }
+    }) : //console.log("Not Found") 
+    toast.error('Not Found')  
+  } 
+  setLoading(false)    
+     
   }
 
   const columns = [
@@ -115,19 +135,29 @@ const getCompanyName = (e) => {
   e.preventDefault()
   const {name, value} = e.target
   setbtnCompanyId({...btnCompanyId, [name]:value})    
-  console.log("Button Company Id", btnCompanyId['btn']) 
   const btnId = btnCompanyId['btn']
+  setLoading(true)
   axiosClient.get(`CSIQ/GetDataonCompanyId?CompanyId=${btnId}`).then((res4) => {
+    setLoading(false)
     setCSIQtable(res4.data)          
       setfilterTable(res4.data)
-    console.log('Get click btn Companies', res4.data)
   }).catch((error) => {
-    console.log(error)
+    //console.log(error)
+    toast.error('Internal server error')
   }) 
 }
 
   return (
     <Fragment>
+    <HashLoader
+      color={"#5856d6"}
+      loading={loading}
+      cssOverride={override}
+      size={100}
+      aria-label="Loading Spinner"
+      data-testid="loader"
+      speedMultiplier="1"
+    />
         <Row>
           <Col xs={12}>
           <Card>
@@ -139,7 +169,7 @@ const getCompanyName = (e) => {
           <Col>
           {
             btnCompany.map((getAssignment, index) => (
-              <Button className='mb-75' color='secondary' value={getAssignment.Id} key={index} size='sm' name='btn' id='btn' outline onClick={getCompanyName}>{getAssignment.ComapanyName} &nbsp;&nbsp;{getAssignment.Count}</Button>
+              <Button key={index} className='mb-75' color='secondary' value={getAssignment.Id}  size='sm' name='btn' id='btn' outline onClick={getCompanyName}>{getAssignment.ComapanyName} &nbsp;&nbsp;{getAssignment.Count}</Button>
             ))
           }
           </Col>          

@@ -4,30 +4,72 @@ import { Card, CardHeader, CardBody, CardTitle, CardText, CardLink, Row,
     Input,
     Label,
     Button,
-    FormFeedback,
     InputGroup,
     InputGroupText } from 'reactstrap'
-  
-    import Select from 'react-select'  
-    import { Fragment, useState, useEffect } from 'react'
+    
+    import { Fragment, useState, useEffect, CSSProperties } from 'react'
     
   // ** Icons Imports
-  import { User, Mail, Smartphone, Lock, DollarSign, Book } from 'react-feather'
+  import { BookOpen, DivideCircle } from 'react-feather'
   
   import {toast } from 'react-toastify'
   import 'react-toastify/dist/ReactToastify.css'
+  
   import '@styles/react/pages/invalid-error.scss'
 
   import { axiosClient } from '../../../Client'
   // ** React Imports
-  
+  import HashLoader from "react-spinners/HashLoader"
+
+const override: CSSProperties = {
+  display:"block",
+  margin: "auto",
+  position: "absolute",
+  top: "0%",
+  left: "0%",
+  right:"0%",
+  bottom:"0%",
+  transform: "rotate(180deg)",
+  opacity:"0.8",
+  // width:"100%",
+  // height:"100%",
+  // background:'rgb(235 245 245)',
+  zIndex:'100'
+}
+
+const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+
   const EducationDetailsTabs = () => {
 
   const [insertValues, setInsertValues] = useState([])
-  const [errors, setErrors] = useState({})
-  
+
+  const [EducationDetails, setEducationDetails] = useState([]) 
   const [degree, setDegree] = useState([])  
   const [branch, setBranch] = useState([])
+  
+  const [errors, setErrors] = useState({})
+  const [loading, setLoading] = useState(false)   
+
+  useEffect(() => {
+    setLoading(true)
+      axiosClient.get('Profile/GetEducationalDetails', { 
+        params: {
+          StudentId: loggedInUserDetails.StudentId
+        } 
+      })
+    .then((res) => {
+      setLoading(false)
+      setEducationDetails([res.data])
+      axiosClient.get('Profile/getDegree').then((degreeRes) => {
+        setDegree(degreeRes.data)
+        axiosClient.get('Profile/getBranch').then((branchRes) => {
+          setBranch(branchRes.data)
+        })
+      })
+  
+    })
+  }, [])
+  
 
 
   let minOffset = 0, maxOffset = 50
@@ -45,23 +87,20 @@ import { Card, CardHeader, CardBody, CardTitle, CardText, CardLink, Row,
       ...insertValues,
       [name]:value
     })
-    console.log("Educational Details", insertValues)
   }
 
 
   const validate = () => {
     const temp = {}  
     temp.College = insertValues.College === ""  ? false : true
-    temp.lastName = insertValues.lastName === ""  ? false : true
-    temp.mobileNo = insertValues.mobileNo === ""  ? false : true  
-    temp.whatsappNo = insertValues.whatsappNo === ""  ? false : true  
-    temp.ParmanentAddress1 = insertValues.ParmanentAddress1 === ""  ? false : true
-    temp.LinkedInProfile = insertValues.LinkedInProfile === ""  ? false : true
+    temp.PassingYear = insertValues.PassingYear === ""  ? false : true
+    temp.Degree = insertValues.Degree === ""  ? false : true  
+    temp.Branch = insertValues.Branch === ""  ? false : true  
+    temp.Percentage = insertValues.Percentage === ""  ? false : true
+    setErrors(temp)
     return Object.values(temp).every(x => x === true)
   }
 
-const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
-//console.log("LoggedIn StudentId", loggedInUserDetails.StudentId)
 const handleFormSubmit = e => {
   e.preventDefault()
   if (validate()) {
@@ -73,9 +112,10 @@ const handleFormSubmit = e => {
     BranchId:insertValues.Branch,
     Percentage:insertValues.Percentage
   }
-
+  setLoading(true)
   axiosClient.post('Profile/SaveEducationalDetails', ed).then((res) => {
-    toast.success('Educational Details Updated Scuessfully', {
+    setLoading(false)
+    toast.success('Educational Details Updated Sucessfully', {
       position: "top-center",
       autoClose: 2000,
       hideProgressBar: false,
@@ -85,46 +125,35 @@ const handleFormSubmit = e => {
       progress: undefined,
       theme: "light"
       })
-    console.log(res)
   }).catch((error) => {
-    console.log(error)
+    //console.log(error)
+    toast.error('Internal server error')
   })
-  setErrors(insertValues)
   }
 }
 
 const applyErrorClass = field => ((field in errors && errors[field] === false) ? 'invalid' : '')
 
-const [EducationDetails, setEducationDetails] = useState([])  
-
-useEffect(() => {
-    axiosClient.get('Profile/GetEducationalDetails', { 
-      params: {
-        StudentId: loggedInUserDetails.StudentId
-      } 
-    })
-  .then((res) => {
-    setEducationDetails([res.data])
-    console.log("Educational Displayed Data:", res.data)
-    axiosClient.get('Profile/getDegree').then((degreeRes) => {
-      setDegree(degreeRes.data)
-      console.log("get Degree Data:", degreeRes.data)
-      axiosClient.get('Profile/getBranch').then((branchRes) => {
-        setBranch(branchRes.data)
-        console.log("get branch Data:", branchRes.data)
-      })
-    })
-
-  })
-}, [])
-
+const resetForm = () => {
+  setInsertValues('')
+  setErrors({})
+}
 
     return (      
       <Fragment>
+      <HashLoader
+            color={"#5856d6"}
+            loading={loading}
+            cssOverride={override}
+            size={100}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+            speedMultiplier="1"
+          />
       {
-        EducationDetails.map(curEle => (
+        EducationDetails.map((curEle, index) => (
        
-      <Card>
+      <Card key={index}>
       <CardHeader className='border-bottom'>
         <CardTitle tag='h4'>Education Details</CardTitle>
       </CardHeader>
@@ -133,42 +162,47 @@ useEffect(() => {
       <Row>
        <Col sm='6' className='mb-1'>
             <Label className='form-label' for='College'>
-              College  
+              College<span className='text-danger'>*</span>  
             </Label>
-                    <Input className={applyErrorClass('College')} name='College' id='College' placeholder='VTU' defaultValue={curEle.College} onChange={handleInputChange}/>
-                    { insertValues.College === "" ? <span className='text-danger'>Please Fill Your College Name</span> : ""}
+            <InputGroup className='mb-1'>
+                <InputGroupText>
+                  <BookOpen size={14} />
+                </InputGroupText>   
+                    <Input className={applyErrorClass('College')} name='College' id='College' placeholder='College' defaultValue={curEle.College} onChange={handleInputChange}/>
+                    </InputGroup>
+                    { errors.College === false ? <span className='text-danger'>Please Enter Your College Name</span> : ""}
              </Col>
      <Col sm='6' className='mb-1'>
             <Label className='form-label' for='PassingYear'>
-            Passing Year
+            Passing Year<span className='text-danger'>*</span>
             </Label>
-            <select name='PassingYear' id='PassingYear' className='form-control' placeholder='Year' onChange={handleInputChange}>
-            <option selected >{curEle.PassingYear}</option>
+            <select name='PassingYear' id='PassingYear' className='form-control' placeholder='Passing Year' onChange={handleInputChange}>
+            <option readOnly>{curEle.PassingYear!==null?curEle.PassingYear:'--Select Year --'}</option>
                {yearList}
             </select>
-            { insertValues.PassingYear === "" ? <span className='text-danger'>Please Select Your Passing Year</span> : ""}
+            { errors.PassingYear === false ? <span className='text-danger'>Please Select Your Passing Year</span> : ""}
                     </Col>
                     <Col sm='6' className='mb-1'>
           <Label className='form-label' for='Degree'>
-            Degree
+            Degree<span className='text-danger'>*</span>
             </Label>
             <select
                   name='Degree'
                   id='Degree'
-                  className={applyErrorClass('Percentage') + 'form-control'}
+                  className='form-control'
                   placeholder='Select-Degree'
                   onChange={handleInputChange}
-                > <option selected >{curEle.Degree}</option>
+                > <option readOnly>{curEle.Degree!==null?curEle.Degree:'--Select Degree --'}</option>
                 {
                   degree.map((getdegree, index) => (
                     <option key={index} value={getdegree.DegreeId}>{getdegree.name}</option>
                   ))
                 }</select>
-                { insertValues.Degree === "" ? <span className='text-danger'>Please Select Your Degree</span> : ""}
+                { errors.Degree === false ? <span className='text-danger'>Please Select Your Degree</span> : ""}
               </Col>
               <Col sm='6' className='mb-1'>
           <Label className='form-label' for='Branch'>
-            Branch/Stream
+            Branch/Stream<span className='text-danger'>*</span>
             </Label>
             <select
                   name='Branch'
@@ -176,26 +210,31 @@ useEffect(() => {
                   className='form-control'
                   placeholder='Select-Branch'
                   onChange={handleInputChange}
-                > <option selected >{curEle.Branch}</option>
+                > <option readOnly>{curEle.Branch!==null?curEle.Branch:'--Select Branch --'}</option>
                 {
                   branch.map((getbranch, index) => (
                     <option key={index} value={getbranch.BranchId}>{getbranch.name}</option>
                   ))
                 }</select>
-                { insertValues.Branch === "" ? <span className='text-danger'>Please Select Your Branch</span> : ""}
+                { errors.Branch === false ? <span className='text-danger'>Please Select Your Branch</span> : ""}
               </Col>
               <Col sm='6' className='mb-1'>
           <Label className='form-label' for='Percentage'>
-            Percentage/CGPA
+            Percentage/CGPA<span className='text-danger'>*</span>
             </Label>
+            <InputGroup className='mb-1'>
+                <InputGroupText>
+                  <DivideCircle size={14} />
+                </InputGroupText>   
               <Input className={applyErrorClass('Percentage')} name='Percentage' id='Percentage' placeholder='85%' defaultValue={curEle.Per} onChange={handleInputChange}/>
-               { insertValues.Percentage === "" ? <span className='text-danger'>Please Fill Your Degree Percentage</span> : ""}
+             </InputGroup>
+              { errors.Percentage === false ? <span className='text-danger'>Please Enter Your Percentage</span> : ""}
               </Col>              
           <Col className='mt-2' sm='12'>
           <Button type='submit' className='me-1' color='primary'>
             Save changes
           </Button>
-          <Button type='reset' color='secondary' outline>
+          <Button type='reset' color='secondary' outline  onClick={resetForm}>
             Reset
           </Button>
         </Col>

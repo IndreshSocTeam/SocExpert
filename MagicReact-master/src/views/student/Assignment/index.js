@@ -1,7 +1,5 @@
 // ** React Imports
 import { Fragment, useState} from 'react'
-import CountryTables from "./store/myTable.js"
-
 // ** Third Party Components
 //import axios from 'axios'
 

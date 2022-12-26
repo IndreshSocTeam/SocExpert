@@ -17,7 +17,7 @@ import {axiosClient} from '../../../../Client'
 
 const MyRequestActivityTimeLinePage = () => {
 
-  const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
+  const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
   const {ticketNumberid} = useParams()
 
   const intialValues = {

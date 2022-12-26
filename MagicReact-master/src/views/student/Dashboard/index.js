@@ -1,5 +1,5 @@
 // ** Reactstrap Imports
-import { Row, Col, Table, Card, CardBody, CardTitle, CardText, Button, CardHeader, Progress } from 'reactstrap'
+import { Row, Col } from 'reactstrap'
 // ** Context
 import ProgressBar from './ProgressBar'
 import GenieRequests from './Requests'
@@ -32,10 +32,7 @@ const SocDashboard = () => {
         <Col lg='4' xs='12'>
        <ReadyForPlacement/>       
        <Attandance/>
-       </Col>  
-       <Row>
-       
-       </Row>     
+       </Col>    
       </Row>      
       <br/>
     </div>

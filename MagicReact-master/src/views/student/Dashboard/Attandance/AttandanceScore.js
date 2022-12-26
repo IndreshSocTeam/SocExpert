@@ -1,21 +1,34 @@
-import { Row, Col, Table, Card, CardBody, CardTitle, CardText, Button, CardHeader, Progress } from 'reactstrap'
+import { Row, Col, Card, CardBody, Progress, UncontrolledTooltip } from 'reactstrap'
  
 import '@styles/react/libs/charts/apex-charts.scss'
 import '@styles/base/pages/dashboard-ecommerce.scss'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 
 import {axiosClient} from '../../../../Client'
+import { useState, useEffect, CSSProperties} from 'react'
 import Chart from 'react-apexcharts'
-import { useState, useEffect} from 'react'
+import ClipLoader from "react-spinners/ClipLoader"
+
+const override: CSSProperties = {
+  display:"block",
+  margin:"auto",
+  left:"0",
+  right:"0%",
+  bottom:"0",
+  top:"0",
+  position: "absolute",
+};
 
 const AttandanceScore = () => {
-  const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
+  const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
   const [attandanceScores, setAttandanceScores] = useState([])
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
+    setLoading(true)
       axiosClient.get(`Dashboard/getStudentDashboard?StudentId=${loggedInUserDetails.StudentId}`).then((res) => {
           setAttandanceScores([res.data])
-        console.log('Attandance',  res.data)
+          setLoading(false)
       }).catch((error) => {
         console.log(error)
       })
@@ -85,12 +98,21 @@ const AttandanceScore = () => {
     }
     return (
             <Card>
-              <CardBody>
+              <CardBody id='Attandance'>
               <h5>Attendance</h5>
+              <ClipLoader
+         color={"#6610f2"}
+         loading={loading}
+         cssOverride={override}
+         size={40}
+         aria-label="Loading Spinner"
+         data-testid="loader"
+         speedMultiplier="1"
+       />
               <br/>
               {
                 attandanceScores.map((getAttandanceScores, index) => (
-                <Row>
+                <Row key={index}>
                 
                 <Col lg='12' xs='6' sm='6' style = {{marginTop : -30}}> 
                 <Chart options={options} series={[(getAttandanceScores.PresentAttandance / getAttandanceScores.TotalAttandance) * 100]} type='radialBar' height={135} />         
@@ -99,7 +121,7 @@ const AttandanceScore = () => {
                   <Col lg='12' xs='6' sm='6'>
                     <Col>
                     <p className='mb-50'>Present: {getAttandanceScores.PresentAttandance}</p>
-                    <Progress key={index} className='avg-session-progress progress-bar-success mt-25' value={getAttandanceScores.PresentAttandance} />
+                    <Progress className='avg-session-progress progress-bar-success mt-25' value={getAttandanceScores.PresentAttandance} />
                    </Col>
                    <br/>
                    <Col>
@@ -111,6 +133,10 @@ const AttandanceScore = () => {
                 ))
               } 
               </CardBody>
+              
+  <UncontrolledTooltip placement='top' target='Attandance'>
+  Your Current Attandance
+</UncontrolledTooltip> 
             </Card>
     )
   }

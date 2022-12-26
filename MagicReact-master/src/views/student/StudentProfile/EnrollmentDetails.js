@@ -1,46 +1,73 @@
-import { Card, CardHeader, CardBody, CardTitle, CardText, CardLink, Row,
+import { Card, CardHeader, CardBody, CardTitle, Row,
     Col,
     Form,
-    Input,
-    Label,
-    Button,
-    InputGroup,
-    InputGroupText } from 'reactstrap'
+    Label } from 'reactstrap'
   
-    import { Fragment, useState, useEffect } from 'react'
-    //import { useState, useEffect } from 'react'
-    import Select from 'react-select'  
+    import { Fragment, useState, useEffect, CSSProperties } from 'react'
   import '@src/assets/scss/style.scss'
-  // ** Icons Imports
-  import { Users, UserCheck, Home, Calendar, DollarSign } from 'react-feather'
+
+// ** Third Party Imports
+import { toast } from 'react-toastify'
+import '@styles/react/pages/invalid-error.scss'
+
   import {axiosClient} from '../../../Client'
   // ** React Imports 
   
+  import HashLoader from "react-spinners/HashLoader"
+
+const override: CSSProperties = {
+  display:"block",
+  margin: "auto",
+  position: "absolute",
+  top: "0%",
+  left: "0%",
+  right:"0%",
+  bottom:"0%",
+  transform: "rotate(180deg)",
+  opacity:"0.8",
+  // width:"100%",
+  // height:"100%",
+  // background:'rgb(235 245 245)',
+  zIndex:'100'
+}
+
+const localUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
   const EnrollmentDetailsTabs = () => {
    
-const localUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
-console.log("LoggedIn StudentId", localUserDetails.StudentId)
-
     const [userDetails, setUserDetails] = useState([])  
+    const [loading, setLoading] = useState(false)  
+    
     useEffect(() => {
+      setLoading(true)
     axiosClient.get('Profile/GetEnrollmentDetails', { 
       params: {
         StudentId: localUserDetails.StudentId
       } 
     })
   .then((res) => {
+    setLoading(false)
     setUserDetails([res.data])
-   // setUserDetails({...data})
-    console.log("Enrollment Details:", res.data)
+  }).catch((error) => {
+    //console.log(error)
+      toast.error('Internal server error')
   })
 }, [])
 
 
     return (
       <Form>
+      <HashLoader
+            color={"#5856d6"}
+            loading={loading}
+            cssOverride={override}
+            size={100}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+            speedMultiplier="1"
+          />
          {
-      userDetails.map(curData => (        
-      <Row>  
+      userDetails.map((curData, index) => (        
+      <Row key={index}>  
     <Col md='12' sm='12'>
       <Card>
       <CardHeader className='border-bottom'>

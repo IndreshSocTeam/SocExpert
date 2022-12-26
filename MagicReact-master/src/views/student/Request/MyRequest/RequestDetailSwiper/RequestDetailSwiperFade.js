@@ -44,9 +44,9 @@ useEffect(() => {
     <CardTitle tag='h4'>Request Details</CardTitle>
   </CardHeader>
   {
-    GetRequestTicketDetails.map(curEle => (
+    GetRequestTicketDetails.map((curEle, index) => (
    
-  <CardBody className='py-2 my-25 p-2'>
+  <CardBody key={index} className='py-2 my-25 p-2'>
       <Row>
         <Col sm='12'>
         <Row>

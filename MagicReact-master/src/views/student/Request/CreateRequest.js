@@ -1,11 +1,10 @@
 // ** React Imports
-import { Fragment, useState, useEffect} from 'react'
+import { Fragment, useState, useEffect, CSSProperties} from 'react'
 
-// ** Third Party Components
-import Select from 'react-select'
 // ** Reactstrap Imports
-import { Row, Col, Card, CardHeader, CardBody, CardTitle, Input, Label, Button, Form} from 'reactstrap'
+import { Row, Col, Card, CardHeader, CardBody, CardTitle, Input, Label, Button, Form, InputGroup, InputGroupText} from 'reactstrap'
 
+import {Edit2, Edit3, DollarSign} from 'react-feather'
 
 import {toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -24,13 +23,40 @@ import {axiosClient} from '../../../Client'
 // ** Styles
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 import '@styles/react/pages/page-account-settings.scss'
+//invalid style class    
 import '@styles/react/pages/invalid-error.scss'
+
+import HashLoader from "react-spinners/HashLoader"
+
+const override: CSSProperties = {
+  display:"block",
+  margin: "auto",
+  position: "absolute",
+  top: "0%",
+  left: "0%",
+  right:"0%",
+  bottom:"0%",
+  transform: "rotate(180deg)",
+  opacity:"0.8",
+  // width:"100%",
+  // height:"100%",
+  // background:'rgb(235 245 245)',
+  zIndex:'100'
+}
+
+const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+const intitalInsertValues = {
+  RequestType: '',
+  ShortDescription : '',
+  LongDescription : '', 
+}
+
 
 const CreateRequestTab  = () => {
   
-  const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
-  const [insertValues, setInsertValues] = useState([])
+  const [insertValues, setInsertValues] = useState(intitalInsertValues)
   const [errors, setErrors] = useState({})
+  const [loading, setLoading] = useState(false)  
 
   const [requestType, setRequestType] = useState([])
   const [requestTypeId, setRequestTypeId] = useState('')
@@ -43,38 +69,40 @@ const CreateRequestTab  = () => {
 
   const handleRequestTypeChange = e => {
     const RequestTypeIdOnSelect = e.target.value
-    setRequestTypeId(RequestTypeIdOnSelect) 
-    
+    setRequestTypeId(RequestTypeIdOnSelect)     
     // getAllSubRequestsOnMainRequest        
+    setLoading(true)
       axiosClient.get(`Request/getAllSubRequestsOnMainRequest?MainRequestId=${RequestTypeIdOnSelect}`).then((res1) => {
+        setLoading(false)
         setSubRequestType(res1.data)
-        console.log('SubRequest Type',  res1.data)
         //GetCoins For Request On Select 
+        setLoading(true)
       axiosClient.get(`/Request/GetCoinsForRequest?RequestType=${RequestTypeIdOnSelect}`).then((res2) => {
+        setLoading(false)
       setSubRequestCoins([res2.data])
-      console.log('Request Type coins',  res2.data)
     })
       }).catch((error) => {
-        console.log(error)
+        //console.log(error)
+        toast.error('Internal server error')
       })
   }
   
   const validate = () => {
     const temp = {}  
+    temp.RequestType = requestTypeId === ""  ? false : true
     temp.ShortDescription = insertValues.ShortDescription === ""  ? false : true
-    temp.LongDescription = insertValues.LongDescription === ""  ? false : true
+    temp.LongDescription = insertValues.LongDescription === ""  ? false : true  
+    setErrors(temp)
     return Object.values(temp).every(x => x === true)
   }
 
 
 useEffect(() => {
   axiosClient.get('Request/GetRequestType').then((res) => {
-    setRequestType(res.data)
-    console.log('Request Type',  res.data)
-    //  coins
-    
+    setRequestType(res.data)    
   }).catch((error) => {
-    console.log(error)
+    //console.log(error)
+    toast.error('Internal server error')
   })
 }, [requestTypeId])
 
@@ -85,14 +113,13 @@ useEffect(() => {
       ...insertValues,
       [name]: value
     })
-    console.log("Create request Details", insertValues)
   }
 
   const handleFormSubmit = e => {
     e.preventDefault()
   }
 
-  const applyErrorClass = field => ((field in errors && errors[field] === false) ? 'invalid' : '')
+  const applyErrorClass = field => ((field in errors && errors[field] === false) ? ' invalid' : '')
 
   //uiuiuyi
   const showPreview = e => {
@@ -132,10 +159,12 @@ const saveChangesClick = (e) => {
         RequestName:CVfile.CVFileName,
         RequestPath:CVfile.CVbaseUrl
       })
+      setLoading(true)
       axiosClient.post('Request/CreateTicket', td, {headers: { 
         'Content-Type': 'application/json'
       }}).then((res) => {
-        toast.success('Ticket Created Scuessfully', {
+        setLoading(false)
+        toast.success('Ticket Created Sucessfully', {
           position: "top-center",
           autoClose: 2000,
           hideProgressBar: false,
@@ -145,15 +174,24 @@ const saveChangesClick = (e) => {
           progress: undefined,
           theme: "light"
           })
-        console.log(res)
       }).catch((error) => {
-        console.log(error)
+        //console.log(error)
+        toast.error('Internal server error')
       })
-      setErrors(insertValues)
   }  
 }
+
   return (
     <Fragment>
+    <HashLoader
+    color={"#5856d6"}
+    loading={loading}
+    cssOverride={override}
+    size={100}
+    aria-label="Loading Spinner"
+    data-testid="loader"
+    speedMultiplier="1"
+  />
     <Form  onSubmit={handleFormSubmit}>
     <Row>
           <Col xs={12}>
@@ -172,16 +210,16 @@ const saveChangesClick = (e) => {
         <select
                   name='RequestType'
                   id='RequestType'
-                  className='form-control'
-                  //classNamePrefix='select'
+                  className={'form-control'+ applyErrorClass('RequestType')}
                   onChange={handleRequestTypeChange}
-                > <option value="select">Select-Request Type</option>
+                > <option> -- Select-Request Type -- </option>
                 {
                   requestType.map((getRequestType, index) => (
                     <option key={index} value={getRequestType.Id}>{getRequestType.Name}</option>
                   ))
                 }
                 </select>
+                { errors.RequestType === false ? <span className='text-danger'>Please Select RequestType</span> : ""}
         </Col>
         <Row>
         <Col sm='6' className='mb-1'>   
@@ -191,7 +229,7 @@ const saveChangesClick = (e) => {
                   name='subRequestType'
                   id='subRequestType'
                   className='form-control'
-                > <option value="select">Sub-Request Type</option>
+                > <option readOnly> -- Sub-Request Type -- </option>
                 {
                   subRequestType.map((getsubRequestType, index) => (
                     <option key={index} value={getsubRequestType.RequestId}>{getsubRequestType.SubRequestType}</option>
@@ -205,11 +243,16 @@ const saveChangesClick = (e) => {
      
         {
           subRequestCoins.map((getsubRequestCoins, index) => (
-        <Col sm='6' className='mb-1'>   
-        <Label for='RequestType' className='form-label'>
+        <Col sm='6' className='mb-1' key={index}>   
+        <Label for='Coins' className='form-label'>
         SE Coins Consumed
         </Label>  
-        <Input type='text' readOnly key={index} value={getsubRequestCoins.Coins} placeholder='Coins'></Input>
+        <InputGroup className='mb-1 input-group-merge'>
+                <InputGroupText>
+                  <DollarSign size={14} />
+                </InputGroupText> 
+        <Input name='coins' id='Coins' type='text' readOnly  value={getsubRequestCoins.Coins} placeholder='Coins'></Input>
+        </InputGroup>
         </Col>
         ))
                 } 
@@ -218,18 +261,28 @@ const saveChangesClick = (e) => {
         <Col sm='6' className='mb-1'>   
         <Label for='ShortDescription' className='form-label' >
         Short Description
-        </Label>     
+        </Label>  
+        <InputGroup className='mb-1'>
+        <InputGroupText>
+          <Edit2 size={14} />
+        </InputGroupText>    
         <Input type='textarea' className={applyErrorClass('ShortDescription')} name='ShortDescription' id='ShortDescription' placeholder='Write Your Short Description' onChange={handleInputChange}></Input>
-        { (insertValues.ShortDescription === "") || (insertValues.ShortDescription === null) || (insertValues.ShortDescription === undefined) ? <span className='text-danger'>Please Fill the Short Description</span> : ""}
+        </InputGroup>
+        { (errors.ShortDescription === false)  ? <span className='text-danger'>Please Enter the Short Description</span> : ""}
         </Col>
         </Row>
         <Row>
         <Col sm='6' className='mb-1'>   
         <Label for='LongDescription' className='form-label'>
         Long Description
-        </Label>     
+        </Label>
+        <InputGroup className='mb-1 input-group-merge'>
+        <InputGroupText>
+          <Edit3 size={14} />
+        </InputGroupText>      
         <Input type='textarea' className={applyErrorClass('LongDescription')} name='LongDescription' id='LongDescription' placeholder='Write Your Long Description' onChange={handleInputChange}></Input>
-        { (insertValues.LongDescription === "") || (insertValues.LongDescription === null) || (insertValues.LongDescription === undefined) ? <span className='text-danger'>Please Fill the Long Description</span> : ""}
+        </InputGroup>
+        { (errors.LongDescription === false)  ? <span className='text-danger'>Please Enter the Long Description</span> : ""}
         </Col>
         </Row>
         <Row>

@@ -1,6 +1,6 @@
 // ** React Imports
 import { Link } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, CSSProperties } from 'react'
 
 // ** Custom Components
 import Avatar from '@components/avatar'
@@ -12,42 +12,45 @@ import Avatar from '@components/avatar'
 import { User, Mail, CheckSquare, MessageSquare, Settings, CreditCard, HelpCircle, Power } from 'react-feather'
 
 // ** Reactstrap Imports
-import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem } from 'reactstrap'
+import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem, UncontrolledTooltip} from 'reactstrap'
 
 // ** Default Avatar Image
 import defaultAvatar from '@src/assets/images/portrait/small/AnandGuru.jpg'
-
+import ClipLoader from "react-spinners/ClipLoader"
 import {axiosClient} from '../../../../Client'
+
+
+const override: CSSProperties = {
+  display:"block",
+  margin:"auto",
+  right:"5%",
+  bottom:"0",
+  top:"0",
+  position: "absolute",
+};
 
 const UserDropdown = () => {
   // ** State
   const [userData] = useState(null)
-
-  //** ComponentDidMount
-  // useEffect(() => {
-  //   if (isUserLoggedIn() !== null) {
-  //     setUserData(JSON.parse(localStorage.getItem('userData')))
-  //   }
-  // }, [])
-
-  //** Vars
+  const [loading, setLoading] = useState(false)
   const userAvatar = (userData && userData.avatar) || defaultAvatar
 
-  const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
-  //console.log("LoggedIn StudentId", loggedInUserDetails.StudentId)
+  const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
   
   const [userNavDetails, setUserNavDetails] = useState([])  
   
   useEffect(() => {
-      axiosClient.get('Profile/GetPersonalDetails', { 
+      setLoading(true)
+      axiosClient.get('Profile/GetPersonalDetailsInNavBar', { 
         params: {
           StudentId: loggedInUserDetails.StudentId
         } 
       })
     .then((res) => {
+      setLoading(false)
       setUserNavDetails([res.data])
-     // setUserDetails({...data})
-      console.log("Displayed Data:", res.data)
+    }).catch((error) => {
+      console.log(error)
     })
   }, [])
 
@@ -55,20 +58,33 @@ const UserDropdown = () => {
 
 const handleLogOut = () => {
   localStorage.clear()
+  sessionStorage.clear()
 }
 
   return (
     <div>
+    <ClipLoader
+    color={"#6610f2"}
+    loading={loading}
+    cssOverride={override}
+    size={40}
+    aria-label="Loading Spinner"
+    data-testid="loader"
+    speedMultiplier="1"
+  />
     {
       userNavDetails.map((curData, index) => (   
     <UncontrolledDropdown key={index} tag='li' className='dropdown-user nav-item'>
-      <DropdownToggle href='/' tag='a' className='nav-link dropdown-user-link' onClick={e => e.preventDefault()}>
-        <div className='user-nav d-sm-flex d-none'>        
+    <DropdownToggle id="pic" href='/' tag='a' className='nav-link dropdown-user-link' onClick={e => e.preventDefault()}>
+       <div className='user-nav d-sm-flex d-none'>        
           <span className='user-name fw-bold'>{curData.Fname}&nbsp;{curData.Lname}</span>
           <span className='user-status'>{(userData && userData.role) || 'Student'}</span>
         </div>
-        <Avatar img={curData.ProfilePic} imgHeight='40' imgWidth='40' status='online' />
+        <Avatar img={curData.ProfilePic} imgHeight='40' imgWidth='40' status='online' alt='Your Avatar' />
       </DropdownToggle>
+      <UncontrolledTooltip placement='top' target='pic'>
+        Your Avatar
+      </UncontrolledTooltip>
       <DropdownMenu end>
         <DropdownItem tag='a' href='/pages/profile' onClick={e => e.preventDefault()}>
           <User size={14} className='me-75' />

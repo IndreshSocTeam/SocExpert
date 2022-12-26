@@ -1,13 +1,15 @@
 // ** React Imports
-import { Fragment, useState, useEffect} from 'react'
+import { Fragment, useState, useEffect, CSSProperties} from 'react'
 
-// ** Third Party Components
-import Select from 'react-select'
+import {User, Users, Briefcase, Edit ,Mail} from 'react-feather'
 
 // ** Reactstrap Imports
-import { Row, Col, Card, CardHeader, CardBody, CardTitle, Label, Input, Button} from 'reactstrap'
+import { Row, Col, Card, CardHeader, CardBody, CardTitle, Label, Input, Button, InputGroup, InputGroupText} from 'reactstrap'
 
 import { Editor } from 'react-draft-wysiwyg'
+
+import {toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 import '@styles/react/libs/editor/editor.scss'
 
@@ -17,20 +19,48 @@ import '@styles/react/libs/flatpickr/flatpickr.scss'
 import '@styles/react/pages/page-account-settings.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import DataTable from "react-data-table-component"
-import {toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+//invalid style class
 import '@styles/react/pages/invalid-error.scss'
 
+import HashLoader from "react-spinners/HashLoader"
+
+const override: CSSProperties = {
+  display:"block",
+  margin: "auto",
+  position: "absolute",
+  top: "0%",
+  left: "0%",
+  right:"0%",
+  bottom:"0%",
+  transform: "rotate(180deg)",
+  opacity:"0.8",
+  // width:"100%",
+  // height:"100%",
+  // background:'rgb(235 245 245)',
+  zIndex:'100'
+}
+
+
+const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+
+const intitalInsertValues = {
+  Company : '',
+  role : '',  
+  HREmail: '',
+  HRName: '',
+  InterviewerName: '',
+  Questions:''
+}
 const CSIQpost = () => {
   
-const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
-  const [CSIQquestions, setCSIQquestions] = useState([])
+  const [CSIQquestions, setCSIQquestions] = useState(intitalInsertValues)
 
   const [CSIQquestionsTable, setCSIQquestionsTable] = useState([])
 
   const [search, setSearch] =  useState("")  
   const [filterTable, setfilterTable] =  useState([])
   const [errors, setErrors] = useState({})
+  const [loading, setLoading] = useState(false)
 
   // const [editorState, setEditorState] = useState('')
   // const handleEditorChange = (state) => {
@@ -44,28 +74,31 @@ const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails
   const validate = () => {
     const temp = {}  
     temp.Company = CSIQquestions.Company === ""  ? false : true
+    temp.role = CSIQquestions.role === ""  ? false : true
     temp.HREmail = CSIQquestions.HREmail === ""  ? false : true
     temp.HRName = CSIQquestions.HRName === ""  ? false : true
     temp.InterviewerName = CSIQquestions.InterviewerName === ""  ? false : true
+    temp.Questions = CSIQquestions.Questions === ""  ? false : true
+    setErrors(temp)
     return Object.values(temp).every(x => x === true)
   }
   
   useEffect(() => {
+    setLoading(true)
     axiosClient.get(`CSIQ/GetExisitingCSIQ?StudentId=${loggedInUserDetails.StudentId}`).then((tableResult) => {
+      setLoading(false)
       setCSIQquestionsTable(tableResult.data)
       setfilterTable(tableResult.data)
-      console.log("Question Posted Table", tableResult.data)
     }).catch((error) => {
-      console.log(error)
+      //console.log(error)
+    toast.error('Internal server error')
     })
   }, [])
 
 
   const onhandleChange = (e) => {
       const {name, value} = e.target
-     setCSIQquestions({...CSIQquestions, [name]:value})    
-     console.log("CSIQ Questions", CSIQquestions)
-
+     setCSIQquestions({...CSIQquestions, [name]:value})
   }
 
 const onPostQuestions = (e)  => {
@@ -76,14 +109,15 @@ const onPostQuestions = (e)  => {
     ConsultantEmail:CSIQquestions.HREmail,
     ConsultantName:CSIQquestions.HRName,
     InterviewerName:CSIQquestions.InterviewerName,
-    Questions:'CSIQquestions.Questions',
+    Questions:CSIQquestions.Questions,
     Role:CSIQquestions.role,
     CompanyName:CSIQquestions.Company
   })
-  
+  setLoading(true)
   axiosClient.post('CSIQ/AddCSIQ', csiq, {headers: { 
     'Content-Type': 'application/json'
   }}).then((res) => {
+    setLoading(false)
     toast.success('Question Posted Sucessfully', {
       position: "top-center",
       autoClose: 2000,
@@ -94,16 +128,15 @@ const onPostQuestions = (e)  => {
       progress: undefined,
       theme: "light"
       })
-    console.log(res)
   }).catch((error) => {
     console.log(error)
+    toast.error('Internal server error')
   })
-  setErrors(CSIQquestions)
 }
 }
 
 
-const applyErrorClass = field => ((field in errors && errors[field] === false) ? 'invalid' : '')
+const applyErrorClass = field => ((field in errors && errors[field] === false) ? ' invalid' : '')
 
 const columns = [
   {
@@ -138,6 +171,15 @@ useEffect(() => {
 
   return (
     <Fragment>
+    <HashLoader
+    color={"#5856d6"}
+    loading={loading}
+    cssOverride={override}
+    size={100}
+    aria-label="Loading Spinner"
+    data-testid="loader"
+    speedMultiplier="1"
+  />
         <Row>
           <Col xs={12}>
           <Card>
@@ -151,9 +193,14 @@ useEffect(() => {
           <Col className='mb-1'>
                 <Label className='form-label' for='Company'>
                   Company
-                </Label>                  
+                </Label> 
+                <InputGroup className='mb-1'>
+                <InputGroupText>
+                  <Briefcase size={14} />
+                </InputGroupText>                 
                     <Input className={applyErrorClass('Company')} type='text' id='Company' name='Company' placeholder='Company' onChange={onhandleChange}/>
-                    { (CSIQquestions.Company === "") || (CSIQquestions.Company === null) || (CSIQquestions.Company === undefined) ? <span className='text-danger'>Please Enter Company Name</span> : ""}
+                   </InputGroup>
+                    { (errors.Company === false) ? <span className='text-danger'>Please Enter Company Name</span> : ""}
             </Col>
             </Row>
             <Row>
@@ -164,8 +211,9 @@ useEffect(() => {
                 <select
                 name='role'
                 id='role'
-                className='form-control'
+                className={'form-control'+applyErrorClass('role')}
                 onChange={onhandleChange}>
+                <option readOnly> -- Select Role --</option>
                 <option value='SOC Analyst (L1 Security Analyst)'>SOC Analyst (L1 Security Analyst)</option>
                 <option value='Senior SOC Analyst (L2 Security Analyst)'>Senior SOC Analyst (L2 Security Analyst)</option>
                 <option value='SOC Lead'>SOC Lead</option>
@@ -179,6 +227,8 @@ useEffect(() => {
                 <option value='XDR Admin/Consultant'>XDR Admin/Consultant</option>
                 <option value='Others'>Others</option>
               </select>
+              { (errors.role === false) ? <span className='text-danger'>Please Select Your Role </span> : ""}
+           
               </Col>
           </Row>
           </Col>
@@ -192,27 +242,42 @@ useEffect(() => {
           <Col className='mb-1'>
                 <Label className='form-label' for='InterviewerName'>
                   Interviewer Name
-                </Label>                  
+                </Label> 
+                <InputGroup className='mb-1'>
+                <InputGroupText>
+                  <User size={14} />
+                </InputGroupText>                       
                     <Input className={applyErrorClass('InterviewerName')} type='text' id='InterviewerName' name='InterviewerName' placeholder='InterviewerName' onChange={onhandleChange}/>
-                    { (CSIQquestions.InterviewerName === "") || (CSIQquestions.InterviewerName === null) || (CSIQquestions.InterviewerName === undefined) ? <span className='text-danger'>Please Enter Interviewer Name</span> : ""}
+                    </InputGroup>
+                    { (errors.InterviewerName === false) ? <span className='text-danger'>Please Enter Interviewer Name</span> : ""}
               </Col>
             </Row>
             <Row>
           <Col className='mb-1'>
                 <Label className='form-label' for='HRName'>
                 Consultant/HR Name
-                </Label>                  
+                </Label> 
+                <InputGroup className='mb-1'>
+                <InputGroupText>
+                  <Users size={14} />
+                </InputGroupText>                       
                     <Input className={applyErrorClass('HRName')} type='text' id='HRName' name='HRName' placeholder='Consultant/HR Name' onChange={onhandleChange}/>
-                    { (CSIQquestions.HRName === "") || (CSIQquestions.HRName === null) || (CSIQquestions.HRName === undefined) ? <span className='text-danger'>Please Enter HR Name</span> : ""}
+                    </InputGroup>
+                    { (errors.HRName === false) ? <span className='text-danger'>Please Enter HR Name</span> : ""}
               </Col>
             </Row>
             <Row>
           <Col className='mb-1'>
                 <Label className='form-label' for='HREmail'>
                 Consultant/HR Email
-                </Label>                  
+                </Label>  
+                <InputGroup className='mb-1'>
+                <InputGroupText>
+                  <Mail size={14} />
+                </InputGroupText>                      
                     <Input className={applyErrorClass('HREmail')} type='email' id='HREmail' name='HREmail' placeholder='HREmail' onChange={onhandleChange}/>
-                    { (CSIQquestions.HREmail === "") || (CSIQquestions.HREmail === null) || (CSIQquestions.HREmail === undefined) ? <span className='text-danger'>Please Enter HR Email</span> : ""}
+                  </InputGroup>
+                    { (errors.HREmail === false) ? <span className='text-danger'>Please Enter HR Email</span> : ""}
                   </Col>
             </Row>
           </CardBody>
@@ -228,8 +293,14 @@ useEffect(() => {
                 wrapperClassName="wrapper-class"
                 editorClassName="editor-class"
   toolbarClassName="toolbar-class"/>*/}
+  <InputGroup className='mb-1'>
+                <InputGroupText>
+                  <Edit size={14} />
+                </InputGroupText>      
   <Input className={applyErrorClass('Questions')} type='textarea' id='Questions' name='Questions' placeholder='Enter the Question' onChange={onhandleChange}/>
-                   
+  </InputGroup>
+  { (errors.Questions=== false) ? <span className='text-danger'>Please Enter Your Questions</span> : ""}
+                      
           </Col>
           <Button type='button' className='me-1' color='primary' onClick={onPostQuestions}>
                   Save changes

@@ -9,32 +9,51 @@ import "./tableStyles.css"
 
 import { Link } from 'react-router-dom'
 
-import { Fragment, useState, useEffect} from 'react'
-// ** Icons Imports
-import { MoreVertical, Edit, Trash } from 'react-feather'
+import { Fragment, useState, useEffect, CSSProperties} from 'react'
 
 import {axiosClient} from '../../../../Client'
 // ** Reactstrap Imports
 import {  Row, Col, Form, Card, CardTitle, Table, Badge, CardHeader } from 'reactstrap'
 
+import HashLoader from "react-spinners/HashLoader"
+
+const override: CSSProperties = {
+  display:"block",
+  margin: "auto",
+  position: "absolute",
+  top: "0%",
+  left: "0%",
+  right:"0%",
+  bottom:"0%",
+  transform: "rotate(180deg)",
+  opacity:"0.8",
+  // width:"100%",
+  // height:"100%",
+  // background:'rgb(235 245 245)',
+  zIndex:'100'
+}
+
+const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
 
 const MyRequestTab = () => {
-  const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
   const [search, setSearch] =  useState('')
     const [requests, setRequests] =  useState([])    
     const [filterTable, setfilterTable] =  useState([])
+    const [loading, setLoading] =  useState([])
 
   const getRequests = async () => {
-    try {
+    try {           
+    setLoading(true)
       await axiosClient.get('Request/GetAllRequests', {params: {
-        StudentId: loggedInUserDetails.StudentId  //23
-      }}).then((res) => {        
+        StudentId: loggedInUserDetails.StudentId 
+      }}).then((res) => { 
+        setLoading(false)       
       setRequests(res.data)
       setfilterTable(res.data)
-        console.log('Request Details Display',  res.data)
       })
     } catch (error) {
-        console.log(error)
+        //console.log(error)
+        toast.error('Internal server error')
     }
   }
 
@@ -97,6 +116,15 @@ const MyRequestTab = () => {
 
   return (
     <Fragment>
+    <HashLoader
+    color={"#5856d6"}
+    loading={loading}
+    cssOverride={override}
+    size={100}
+    aria-label="Loading Spinner"
+    data-testid="loader"
+    speedMultiplier="1"
+  />
     <Card title='Review Assignment'>
           <CardHeader className='border-bottom'>
           <CardTitle tag='h4'>Your Request</CardTitle>
