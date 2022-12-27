@@ -94,6 +94,10 @@ const [cityId, setCityId] = useState('')
 
 const [fileSelected, setFileSelected] = useState('')
 
+//const [image, setImage] = useState(null)
+const image = document.getElementById('cropImage')
+
+const [result, setresult] = useState(null)
 const [crop, setCrop] = useState({
   unit: '%', // Can be 'px' or '%'
   x: 25,
@@ -166,9 +170,16 @@ const showPreview = e => {
     }
     reader.readAsDataURL(imgFile)
   } else {
-    setFileSelected({imgFileName:null, imgbaseUrl:defaultAvatar}) 
+    setFileSelected('') 
   }
 }
+
+const ResetPic = e => {
+  e.preventDefault()
+  setFileSelected('')
+  setresult('')
+}
+
 
 const validate = () => {
   const temp = {}  
@@ -232,12 +243,43 @@ const saveChangesClick = (e) => {
 }
 
 
+const cropImageNow = () => {
+  const canvas = document.createElement('canvas');
+  const scaleX = image.naturalWidth / image.width;
+  const scaleY = image.naturalHeight / image.height;
+  canvas.width = crop.width;
+  canvas.height = crop.height;
+  const ctx = canvas.getContext('2d');
+
+ const pixelRatio = window.devicePixelRatio;
+    canvas.width = crop.width * pixelRatio;
+    canvas.height = crop.height * pixelRatio;
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    ctx.imageSmoothingQuality = 'high';
+
+  ctx.drawImage(
+    image,
+    crop.x * scaleX,
+    crop.y * scaleY,
+    crop.width * scaleX,
+    crop.height * scaleY,
+    0,
+    0,
+    crop.width,
+    crop.height,
+  );
+    
+  // Converting to base64
+  const base64Image = canvas.toDataURL('image/jpeg');
+  setresult(base64Image);
+  }
 const UploadPic = (e) => {
 e.preventDefault()
 const um = JSON.stringify({
   UserId:loggedInUserDetails.StudentId,
   TypeId:1,
-  CVPath:fileSelected.imgbaseUrl,
+  //CVPath:fileSelected.imgbaseUrl,
+  CVPath:result,
   CVName:fileSelected.imgFileName
 })
 setLoading(true)
@@ -245,7 +287,7 @@ axiosClient.post('Profile/UpdateCVPic', um, {headers: {
   'Content-Type': 'application/json'
 }}).then((res) => {
   setLoading(false)
-  toast.success('Uploaded Photo Sucessfully', {
+  toast.success('Photo Uploaded Sucessfully', {
     position: "top-center",
     autoClose: 2000,
     hideProgressBar: false,
@@ -287,7 +329,7 @@ const applyErrorClass = field => ((field in errors && errors[field] === false) ?
       <Card>
         <CardHeader className='border-bottom' >
           <CardTitle tag='h4'>Profile Details</CardTitle>
-        </CardHeader>        
+        </CardHeader>  
       <HashLoader
       color={"#5856d6"}
       loading={loading}
@@ -298,47 +340,53 @@ const applyErrorClass = field => ((field in errors && errors[field] === false) ?
       speedMultiplier="1"
     />
         <CardBody>
-         
     {
       GetPersonalDetails.map((curEle, index) => (
      
         <Form className='mt-2 pt-50' autoComplete='off' onSubmit={handleFormSubmit} key={index}>
-          <div className='d-flex'>
-            <div className='me-25' >
+       
+          <div className='d-flex'>  
+          <div style={{visibility: fileSelected.imgbaseUrl ? 'hidden' : 'visible', marginLeft: fileSelected.imgbaseUrl ? '-100px' : '0' }} >
+          <img src={curEle.ProfilePic} alt='Your Avatar' className='rounded me-50' height='100' width='100'/>
+          </div>
+          <div className='d-flex align-items-end mb-4'>
+          {result ? (<div><img src={result} alt='croppedImage' className='rounded me-50' height='100' width='100'/></div>) : ""}  
+          </div>  
+            <div className='me-25'>        
             { fileSelected.imgbaseUrl &&
-              <div>
-              <ReactCrop src={fileSelected.imgbaseUrl} crop={crop} onChange={c => setCrop(c)} >
-              <img className='rounded me-50' src={fileSelected.imgbaseUrl}  alt='Profile Photo' height='100' width='100' />
-              </ReactCrop>
-              </div>
+              <div style={{visibility: result ? 'hidden' : 'visible' }} > 
+              <ReactCrop crop={crop} onChange={c => setCrop(c)} >           
+              <img id='cropImage' className='rounded me-50' src={fileSelected.imgbaseUrl}  alt='Profile Photo' height='100' width='100' />
+              </ReactCrop>      <br/>              
+              <Button className='me-1 m-1' outline onClick={cropImageNow}>Crop</Button>  
+              </div> 
               }
-              <img className='rounded me-50' src={curEle.ProfilePic}  alt='Profile Photo' height='100' width='100' />
-            </div>
-            <div className='d-flex align-items-end mt-75 ms-1'>
-              <div>
+              </div>
+            <div className='d-flex align-items-end ms-1'>  
+              <div style={{marginLeft: result ? '-100px' : '0' }}>
               <Input type='file' className='form-control-file' id='ProfilePicture' name='ProfilePicture'  accept='image/*' onChange={showPreview}/>
+              <p className='m-1'>Allowed JPG, JPEG or PNG. Max size of 800kB</p>
               <div className='mt-1 pt-50'>
               <Button className='mb-75 me-75' size='sm' color='primary' onClick={UploadPic}>
                   Upload
                   </Button>
-                <Button className='mb-75' color='secondary' size='sm' outline>
+                <Button className='mb-75' color='secondary' size='sm' outline  onClick={ResetPic}>
                   Reset
                 </Button>
-                <p className='mb-0'>Allowed JPG, JPEG or PNG. Max size of 800kB</p>
                 </div>
               </div>
             </div>
-          </div>
-            <Row>
+            </div>
+            <Row className='mt-2'>
               <Col sm='6' className='mb-1'>
                 <Label className='form-label' for='firstName'>
                   First Name<span className='text-danger'>*</span>
                 </Label>
-                <InputGroup className={'input-group-merge'+applyErrorClass('firstName')}>
+                <InputGroup className='mb-1'>
                 <InputGroupText>
                   <User size={14} />
                 </InputGroupText>   
-                    <Input id='firstName' name='firstName' placeholder='First Name' defaultValue={curEle.Fname} onChange={handleInputChange}/>
+                    <Input className={applyErrorClass('firstName')} id='firstName' name='firstName' placeholder='First Name' defaultValue={curEle.Fname} onChange={handleInputChange}/>
                     </InputGroup>
                     { errors.firstName === false ? <span className='text-danger'>Please Enter Your First Name</span> : ""}
               </Col>

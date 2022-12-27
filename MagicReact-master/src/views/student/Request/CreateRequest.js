@@ -203,9 +203,9 @@ const saveChangesClick = (e) => {
           <Row>
         <Col sm='12'>
         <Row>
-        <Col sm='6' className='mb-1'>   
+        <Col sm='6' lg='12' className='mb-1'>   
         <Label for='RequestType' className='form-label'>
-        Request Type
+        Request Type<span className='text-danger'>*</span>
         </Label>     
         <select
                   name='RequestType'
@@ -222,9 +222,13 @@ const saveChangesClick = (e) => {
                 { errors.RequestType === false ? <span className='text-danger'>Please Select RequestType</span> : ""}
         </Col>
         <Row>
-        <Col sm='6' className='mb-1'>   
+        <Col sm='6' lg='12' className='mb-1'>   
         {
           (requestTypeId === '1' || requestTypeId === '8') && (
+            <div>
+            <Label for='subRequestType' className='form-label'>
+            Sub Request Type<span className='text-danger'>*</span>
+            </Label>    
             <select
                   name='subRequestType'
                   id='subRequestType'
@@ -236,6 +240,7 @@ const saveChangesClick = (e) => {
                   ))
                 }
                 </select>
+                </div>
           )
         }
         </Col>
@@ -243,7 +248,7 @@ const saveChangesClick = (e) => {
      
         {
           subRequestCoins.map((getsubRequestCoins, index) => (
-        <Col sm='6' className='mb-1' key={index}>   
+        <Col sm='6' lg='12' className='mb-1' key={index}>   
         <Label for='Coins' className='form-label'>
         SE Coins Consumed
         </Label>  
@@ -258,35 +263,35 @@ const saveChangesClick = (e) => {
                 } 
         </Row>
         <Row>
-        <Col sm='6' className='mb-1'>   
+        <Col sm='6' lg='12' className='mb-1'>   
         <Label for='ShortDescription' className='form-label' >
-        Short Description
+        Short Description<span className='text-danger'>*</span>
         </Label>  
         <InputGroup className='mb-1'>
         <InputGroupText>
           <Edit2 size={14} />
         </InputGroupText>    
-        <Input type='textarea' className={applyErrorClass('ShortDescription')} name='ShortDescription' id='ShortDescription' placeholder='Write Your Short Description' onChange={handleInputChange}></Input>
+        <Input valid={errors.ShortDescription !== false && insertValues.ShortDescription !== ""} type='text' className={applyErrorClass('ShortDescription')} name='ShortDescription' id='ShortDescription' placeholder='Write Your Short Description' onChange={handleInputChange}></Input>
         </InputGroup>
         { (errors.ShortDescription === false)  ? <span className='text-danger'>Please Enter the Short Description</span> : ""}
         </Col>
         </Row>
         <Row>
-        <Col sm='6' className='mb-1'>   
+        <Col sm='6' lg='12' className='mb-1'>   
         <Label for='LongDescription' className='form-label'>
-        Long Description
+        Long Description<span className='text-danger'>*</span>
         </Label>
-        <InputGroup className='mb-1 input-group-merge'>
+        <InputGroup className='mb-1'>
         <InputGroupText>
           <Edit3 size={14} />
         </InputGroupText>      
-        <Input type='textarea' className={applyErrorClass('LongDescription')} name='LongDescription' id='LongDescription' placeholder='Write Your Long Description' onChange={handleInputChange}></Input>
+        <Input type='textarea' name='LongDescription' id='LongDescription' placeholder='Write Your Long Description' onChange={handleInputChange} className={applyErrorClass('LongDescription')} valid={errors.LongDescription !== false && insertValues.LongDescription !== ""}></Input>
         </InputGroup>
         { (errors.LongDescription === false)  ? <span className='text-danger'>Please Enter the Long Description</span> : ""}
         </Col>
         </Row>
         <Row>
-        <Col sm='6' className='mb-1'>   
+        <Col sm='6' lg='12' className='mb-1'>   
         <Label for='anyAttachment' className='form-label'>
         Any Attachment (Optional)
         </Label>     

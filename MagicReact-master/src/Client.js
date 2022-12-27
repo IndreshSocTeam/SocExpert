@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const axiosClient = axios.create({
- //baseURL: 'https://restapi.socexperts.com/api/'  
+// baseURL: 'https://restapi.socexperts.com/api/'  
 baseURL: 'https://localhost:44380/api/'
 })
 

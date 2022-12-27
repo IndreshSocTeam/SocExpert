@@ -62,7 +62,8 @@ const SubmitAssignmentTabs = () => {
   const [AssignmentTable, setAssignmentTable] = useState([])  
 
   
-  const [submitAssignment, setSubmitAssignment] = useState(initialvalues)  
+  const [submitAssignment, setSubmitAssignment] = useState(initialvalues) 
+  const [fileSelected, setFileSelected] = useState('') 
 
   const [search, setSearch] =  useState("")  
   const [filterTable, setfilterTable] =  useState([])
@@ -91,6 +92,31 @@ const SubmitAssignmentTabs = () => {
     })
   }
 
+
+  const showPreview = e => {
+    if (e.target.files  && e.target.files[0]) {
+      const imgFile = e.target.files[0]
+      const reader = new FileReader()  
+       reader.onload = () => {
+        setFileSelected({imgFileName:imgFile.name, imgbaseUrl:reader.result})   
+      }  
+      if (imgFile.size > 900000) {
+        toast.error('PDF File Size Should be less than 1MB', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light"
+          })
+      }
+      reader.readAsDataURL(imgFile)
+    } 
+  }
+
+
   useEffect(() => {
     setLoading(true)
     axiosClient.get(`Assignment/getAllActiveAssignmentOnStudentId?StudentId=${loggedInUserDetails.StudentId}`).then((AssignmentRes) => {
@@ -114,7 +140,7 @@ setSubmitAssignment({
 
 const validate = () => {
   const temp = {}  
-  temp.driveLink = submitAssignment.driveLink === ""  ? false : true
+  temp.uploadAssignment = fileSelected === ""  ? false : true
   temp.Comments = submitAssignment.Comments === ""  ? false : true
   setErrors(temp)
   return Object.values(temp).every(x => x === true)
@@ -128,7 +154,8 @@ const asd = JSON.stringify({
   StudentDetailId:loggedInUserDetails.StudentId,              // name mentioned in .net : insertValues.name or id
   AssignmentId:assignmentId,
   Comment:submitAssignment.Comments,
-  Path:submitAssignment.driveLink
+  AssignmentPath:fileSelected.imgbaseUrl,
+  AssignmentName:fileSelected.imgFileName
 })
 setLoading(true)
 axiosClient.post('Assignment/AddStudentAssignement', asd, {headers: { 
@@ -145,6 +172,7 @@ axiosClient.post('Assignment/AddStudentAssignement', asd, {headers: {
     progress: undefined,
     theme: "light"
     })
+    
 }).catch((error) => {
   //console.log(error)
   toast.error('Internal server error')
@@ -278,7 +306,7 @@ const columns = [
       <CardBody>
       <Row>
       <Col>
-      <Label for='driveLink' className='form-label' >
+     {/* <Label for='driveLink' className='form-label' >
       Google Drive Link<span className='text-danger'>*</span>
         </Label>     
         <InputGroup className='mb-1'>
@@ -286,19 +314,24 @@ const columns = [
                   <Clipboard size={14} />
                 </InputGroupText>   
         <Input type='textarea' name='driveLink' id='driveLink' onChange={onSubmitAssignmentChange} placeholder='Google Drive Link' invalid={errors.driveLink === false} valid={errors.driveLink !== false && submitAssignment.driveLink !== ""} ></Input>
-       </InputGroup>
         { errors.driveLink === false ? <span className='text-danger'>Please Paste Your assignment Link</span> : ""}
+        </InputGroup>*/}
+        <Label for='uploadAssignment' className='form-label' >
+      Upload Assignment<span className='text-danger'>*</span>
+        </Label> 
+        <Input type='file' className={applyErrorClass('uploadAssignment')} id='uploadAssignment' name='uploadAssignment' accept='application/*' onChange={showPreview} />
+        { errors.uploadAssignment === false ? <span className='text-danger'>Please Upload Your Assignment</span> : ""}
         </Col>
         <Col>
         <Label for='Comments' className='form-label' >
         Comments<span className='text-danger'>*</span>
         </Label>     
-        <InputGroup className={applyErrorClass('Comments')}>
+        <InputGroup>
                 <InputGroupText>
                   <Edit3 size={14} />
                 </InputGroupText> 
                 {/*invalid={errors.Comments === false} valid={errors.Comments !== false && submitAssignment.Comments !== ""}  */} 
-        <Input type='textarea' name='Comments' id='Comments' onChange={onSubmitAssignmentChange} placeholder='Comments'></Input>      
+        <Input className={applyErrorClass('Comments')} type='textarea' name='Comments' id='Comments' onChange={onSubmitAssignmentChange} placeholder='Comments' valid={errors.Comments !== false && submitAssignment.Comments !== ""}></Input>      
         </InputGroup>
         { errors.Comments === false ? <span className='text-danger'>Please Enter Comments</span> : ""}
         </Col>         
