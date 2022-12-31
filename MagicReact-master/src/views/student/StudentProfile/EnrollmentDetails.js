@@ -9,11 +9,10 @@ import { Card, CardHeader, CardBody, CardTitle, Row,
 // ** Third Party Imports
 import { toast } from 'react-toastify'
 import '@styles/react/pages/invalid-error.scss'
-
   import {axiosClient} from '../../../Client'
-  // ** React Imports 
-  
+  // ** React Imports   
   import HashLoader from "react-spinners/HashLoader"
+  import Cookies from 'js-cookie'
 
 const override: CSSProperties = {
   display:"block",
@@ -31,7 +30,9 @@ const override: CSSProperties = {
   zIndex:'100'
 }
 
-const localUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+//const localUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+const localUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+
   const EnrollmentDetailsTabs = () => {
    
     const [userDetails, setUserDetails] = useState([])  

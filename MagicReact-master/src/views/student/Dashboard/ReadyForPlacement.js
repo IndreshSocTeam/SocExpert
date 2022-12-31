@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import {axiosClient} from '../../../Client'
 
 import ClipLoader from "react-spinners/ClipLoader"
+import Cookies from 'js-cookie'
 
 const override: CSSProperties = {
   display:"block",
@@ -17,7 +18,9 @@ const override: CSSProperties = {
 
 const ReadyForPlacement = () => {
 
-  const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+  //const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+
     const [readyForPlacement, setreadyForPlacement] = useState([])
     const [centeredModal, setCenteredModal] = useState(false)
     const [loading, setLoading] = useState(false)

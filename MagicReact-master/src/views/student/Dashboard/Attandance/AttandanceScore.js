@@ -8,6 +8,7 @@ import {axiosClient} from '../../../../Client'
 import { useState, useEffect, CSSProperties} from 'react'
 import Chart from 'react-apexcharts'
 import ClipLoader from "react-spinners/ClipLoader"
+import Cookies from 'js-cookie'
 
 const override: CSSProperties = {
   display:"block",
@@ -20,7 +21,8 @@ const override: CSSProperties = {
 };
 
 const AttandanceScore = () => {
-  const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+  //const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
   const [attandanceScores, setAttandanceScores] = useState([])
   const [loading, setLoading] = useState(false)
 

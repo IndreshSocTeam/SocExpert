@@ -14,6 +14,7 @@ import '@styles/react/pages/invalid-error.scss'
 
 import {axiosClient} from '../../../Client'
 import HashLoader from "react-spinners/HashLoader"
+import Cookies from 'js-cookie'
 
 const override: CSSProperties = {
   display:"block",
@@ -31,7 +32,9 @@ const override: CSSProperties = {
   zIndex:'100'
 }
 
-const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+//const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+
 const UploadeResumeTabs = () => {
 
 

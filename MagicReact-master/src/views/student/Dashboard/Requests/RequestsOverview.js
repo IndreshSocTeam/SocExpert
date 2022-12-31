@@ -6,6 +6,7 @@ import {axiosClient} from '../../../../Client'
 import '@src/@core/scss/react/libs/charts/apex-charts.scss'
 import ClipLoader from "react-spinners/ClipLoader"
 import Chart from 'react-apexcharts'
+import Cookies from 'js-cookie'
 
 const override: CSSProperties = {
   display:"block",
@@ -19,7 +20,8 @@ const override: CSSProperties = {
 
 const RequestByTypeOverview = () => {
 
-    const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+    //const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+    const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
     const [requestScores, setRequestScores] = useState([])
     const [loading, setLoading] = useState(false)
   

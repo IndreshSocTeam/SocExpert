@@ -9,6 +9,7 @@ import { HelpCircle } from 'react-feather'
 
 import ClipLoader from "react-spinners/ClipLoader"
 import Chart from 'react-apexcharts'
+import Cookies from 'js-cookie'
 
 const override: CSSProperties = {
   display:"block",
@@ -23,7 +24,8 @@ const override: CSSProperties = {
 
 const GenieRequestsAverageScore = () => {
     // ** State
-    const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+    //const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+    const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
     const [requestScores, setRequestScores] = useState([])
     const [loading, setLoading] = useState(false);
   

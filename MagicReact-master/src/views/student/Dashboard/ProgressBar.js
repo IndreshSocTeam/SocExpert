@@ -3,6 +3,7 @@ import { Card, CardBody, Progress, UncontrolledTooltip } from 'reactstrap'
 import { useEffect, useState, CSSProperties } from 'react'
 import {axiosClient} from '../../../Client'
 import ClipLoader from "react-spinners/ClipLoader"
+import Cookies from 'js-cookie'
 
 const override: CSSProperties = {
   display:"block",
@@ -16,7 +17,8 @@ const override: CSSProperties = {
 
 const ProgressBarDashboard = () => {
 
-    const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+    //const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+    const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
     const [loading, setLoading] = useState(false)
     const [progressBarStudent, setProgressBarStudent] = useState([])
     const [progressBarBatch, setProgressBarBatch] = useState([])

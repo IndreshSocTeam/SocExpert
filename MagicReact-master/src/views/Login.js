@@ -12,6 +12,7 @@ import {toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import '@styles/react/pages/invalid-error.scss'
 import HashLoader from "react-spinners/HashLoader"
+import Cookies from 'js-cookie'
 
 const override: CSSProperties = {
   display:"block",
@@ -107,14 +108,17 @@ const initialValues = {
           })
       }else if (res.data === 'Logged Successfully') { 
         // Get StudentId
+        setLoading(true)
         axiosClient.get('/Login/GetUserDetails', { 
           params: sendData
         })
         .then((localres) => {
+          setLoading(false)
           localStorage.setItem("loggedInUserDetails", JSON.stringify(localres.data))
           localStorage.setItem("loggedIn", true)
           sessionStorage.setItem("loggedInUserDetails", JSON.stringify(localres.data))
           sessionStorage.setItem("loggedIn", true)
+          Cookies.set('loggedInUserDetails',JSON.stringify(localres.data))
           toast.success('LoggedIn Sucessfully', {
             position: "top-right",
             autoClose: 3000,
@@ -178,7 +182,7 @@ const initialValues = {
                 <Label className='form-label' for='EmailAddress'>
                   Email
                 </Label>
-                <InputGroup className='mb-2'>
+                <InputGroup className='mb-1'>
           <InputGroupText>
             <User size={14} />
           </InputGroupText> 
@@ -195,8 +199,7 @@ const initialValues = {
                     <small>Forgot Password?</small>
                   </Link>
                 </div>
-                <InputPasswordToggle className={applyErrorClass('Password')} id='Password' value={data.Password} onChange={(e) => handle(e)}/>
-                
+                <InputPasswordToggle invalid={errors.Password === false} id='Password' value={data.Password} onChange={(e) => handle(e)}/>                
                 { errors.Password === false ? <span className='text-danger'>Please Enter the Password</span> : ""}
                 </div>
               <div className='form-check mb-1'>

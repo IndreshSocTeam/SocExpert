@@ -24,6 +24,7 @@ import defaultAvatar from '@src/assets/images/avatars/avatar-blank.png'
 //import DeleteAccount from './DeleteAccount'
 import '@styles/react/pages/invalid-error.scss'
 import HashLoader from "react-spinners/HashLoader"
+import Cookies from 'js-cookie'
 
 const override: CSSProperties = {
   display:"block",
@@ -42,7 +43,8 @@ const override: CSSProperties = {
 }
 
 
-const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+//const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
 
 const PersonalDetailsTabs = () => { 
   
@@ -243,7 +245,8 @@ const saveChangesClick = (e) => {
 }
 
 
-const cropImageNow = () => {
+const cropImageNow = (e) => {  
+  e.preventDefault()
   const canvas = document.createElement('canvas');
   const scaleX = image.naturalWidth / image.width;
   const scaleY = image.naturalHeight / image.height;
@@ -272,36 +275,68 @@ const cropImageNow = () => {
   // Converting to base64
   const base64Image = canvas.toDataURL('image/jpeg');
   setresult(base64Image);
-  }
-const UploadPic = (e) => {
-e.preventDefault()
-const um = JSON.stringify({
-  UserId:loggedInUserDetails.StudentId,
-  TypeId:1,
-  //CVPath:fileSelected.imgbaseUrl,
-  CVPath:result,
-  CVName:fileSelected.imgFileName
-})
-setLoading(true)
-axiosClient.post('Profile/UpdateCVPic', um, {headers: { 
-  'Content-Type': 'application/json'
-}}).then((res) => {
-  setLoading(false)
-  toast.success('Photo Uploaded Sucessfully', {
-    position: "top-center",
-    autoClose: 2000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light"
+console.log(base64Image)
+console.log(fileSelected.imgFileName)
+    const um = JSON.stringify({
+      UserId:loggedInUserDetails.StudentId,
+      TypeId:1,
+      //CVPath:fileSelected.imgbaseUrl,
+      CVPath:base64Image,
+      CVName:fileSelected.imgFileName
     })
-}).catch((error) => {
- // console.log(error)
-  toast.error('Internal server error')
-})
-}
+    setLoading(true)
+    axiosClient.post('Profile/UpdateCVPic', um, {headers: { 
+      'Content-Type': 'application/json'
+    }}).then((res) => {
+      setLoading(false)
+      toast.success('Photo Uploaded Sucessfully', {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light"
+        })
+    }).catch((error) => {
+     // console.log(error)
+      toast.error('Internal server error')
+    })
+  }
+  
+
+
+// const UploadPic = (e) => {
+// e.preventDefault()
+// const um = JSON.stringify({
+//   UserId:loggedInUserDetails.StudentId,
+//   TypeId:1,
+//   //CVPath:fileSelected.imgbaseUrl,
+//   CVPath:result,
+//   CVName:fileSelected.imgFileName
+// })
+// setLoading(true)
+// axiosClient.post('Profile/UpdateCVPic', um, {headers: { 
+//   'Content-Type': 'application/json'
+// }}).then((res) => {
+//   setLoading(false)
+//   toast.success('Photo Uploaded Sucessfully', {
+//     position: "top-center",
+//     autoClose: 2000,
+//     hideProgressBar: false,
+//     closeOnClick: true,
+//     pauseOnHover: true,
+//     draggable: true,
+//     progress: undefined,
+//     theme: "light"
+//     })
+// }).catch((error) => {
+//  // console.log(error)
+//   toast.error('Internal server error')
+// })
+// }
+
 
 useEffect(() => {
   setLoading(true)
@@ -347,7 +382,7 @@ const applyErrorClass = field => ((field in errors && errors[field] === false) ?
        
           <div className='d-flex'>  
           <div style={{visibility: fileSelected.imgbaseUrl ? 'hidden' : 'visible', marginLeft: fileSelected.imgbaseUrl ? '-100px' : '0' }} >
-          <img src={curEle.ProfilePic} alt='Your Avatar' className='rounded me-50' height='100' width='100'/>
+          <img src={(curEle.ProfilePic === null || curEle.ProfilePic === '' ) ? defaultAvatar : curEle.ProfilePic} alt='Your Avatar' className='rounded me-50' height='100' width='100'/>
           </div>
           <div className='d-flex align-items-end mb-4'>
           {result ? (<div><img src={result} alt='croppedImage' className='rounded me-50' height='100' width='100'/></div>) : ""}  
@@ -366,14 +401,14 @@ const applyErrorClass = field => ((field in errors && errors[field] === false) ?
               <div style={{marginLeft: result ? '-100px' : '0' }}>
               <Input type='file' className='form-control-file' id='ProfilePicture' name='ProfilePicture'  accept='image/*' onChange={showPreview}/>
               <p className='m-1'>Allowed JPG, JPEG or PNG. Max size of 800kB</p>
-              <div className='mt-1 pt-50'>
+             {/* <div className='mt-1 pt-50'>
               <Button className='mb-75 me-75' size='sm' color='primary' onClick={UploadPic}>
                   Upload
                   </Button>
                 <Button className='mb-75' color='secondary' size='sm' outline  onClick={ResetPic}>
                   Reset
                 </Button>
-                </div>
+            </div>*/}
               </div>
             </div>
             </div>

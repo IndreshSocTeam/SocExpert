@@ -6,6 +6,7 @@ import { Label } from 'reactstrap'
 
 // ** Third Party Components
 import Flatpickr from 'react-flatpickr'
+import Cookies from 'js-cookie'
 
 const AttandanceCalander = () => {
   // ** State

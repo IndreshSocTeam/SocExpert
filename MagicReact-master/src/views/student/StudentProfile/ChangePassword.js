@@ -18,6 +18,7 @@ import {axiosClient} from '../../../Client'
 // ** Demo Components
   // ** React Imports
 import HashLoader from "react-spinners/HashLoader"
+import Cookies from 'js-cookie'
 
 const override: CSSProperties = {
   display:"block",
@@ -35,7 +36,9 @@ const override: CSSProperties = {
   zIndex:'100'
 }
 
-const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+//const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+
 const pass = '/^[A-Za-z]\w{7,14}$/'
 const initialValues = {
   currentPassword: '',

@@ -18,7 +18,7 @@ import { UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem, Uncon
 import defaultAvatar from '@src/assets/images/avatars/avatar-blank.png'
 import ClipLoader from "react-spinners/ClipLoader"
 import {axiosClient} from '../../../../Client'
-
+import Cookies from 'js-cookie'
 
 const override: CSSProperties = {
   display:"block",
@@ -35,7 +35,8 @@ const UserDropdown = () => {
   const [loading, setLoading] = useState(false)
   const userAvatar = (userData && userData.avatar) || defaultAvatar
 
-  const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+ // const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))  
+  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
   
   const [userNavDetails, setUserNavDetails] = useState([])  
   
@@ -80,7 +81,7 @@ const handleLogOut = () => {
           <span className='user-name fw-bold'>{curData.Fname}&nbsp;{curData.Lname}</span>
           <span className='user-status'>{(userData && userData.role) || 'Student'}</span>
         </div>
-       <Avatar img={curData.ProfilePic} imgHeight='40' imgWidth='40' status='online' alt='Your Avatar' />
+       <Avatar img={(curData.ProfilePic === null || curData.ProfilePic === '' ) ? defaultAvatar : curData.ProfilePic} imgHeight='40' imgWidth='40' status='online' alt='Your Avatar' />
      {/*   <Avatar img={defaultAvatar} imgHeight='40' imgWidth='40' status='online' alt='Your Avatar' /> */}
       </DropdownToggle>
       <UncontrolledTooltip placement='top' target='pic'>

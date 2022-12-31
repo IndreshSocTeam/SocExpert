@@ -19,10 +19,12 @@ const override: CSSProperties = {
 
 
 import { Circle } from 'react-feather'
+import Cookies from 'js-cookie'
 
 const AssignmentsOverview = () => {
     // ** State
-    const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+    //const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+    const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
     const [dashboardScores, setDashboardScores] = useState([])
     const [loading, setLoading] = useState(false)
   
