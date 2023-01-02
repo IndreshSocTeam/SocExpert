@@ -25,6 +25,7 @@ import '@styles/react/pages/page-account-settings.scss'
 import DataTable from "react-data-table-component"
 
 import HashLoader from "react-spinners/HashLoader"
+import Cookies from 'js-cookie'
 
 const override: CSSProperties = {
   display:"block",
@@ -42,9 +43,6 @@ const override: CSSProperties = {
   zIndex:'100'
 }
 
-
-const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
-
 const initialvalues = {
   driveLink:'',
   Comments:''
@@ -53,6 +51,8 @@ const initialvalues = {
 
 const SubmitAssignmentTabs = () => {
 
+//const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
 
   const [assignment, setAssignment] = useState([])  
   const [assignmentId, setAssignmentId] = useState('')
@@ -324,16 +324,15 @@ const columns = [
         </Col>
         <Col>
         <Label for='Comments' className='form-label' >
-        Comments<span className='text-danger'>*</span>
+        Comments
         </Label>     
         <InputGroup>
                 <InputGroupText>
                   <Edit3 size={14} />
                 </InputGroupText> 
                 {/*invalid={errors.Comments === false} valid={errors.Comments !== false && submitAssignment.Comments !== ""}  */} 
-        <Input className={applyErrorClass('Comments')} type='textarea' name='Comments' id='Comments' onChange={onSubmitAssignmentChange} placeholder='Comments' valid={errors.Comments !== false && submitAssignment.Comments !== ""}></Input>      
+        <Input type='textarea' name='Comments' id='Comments' onChange={onSubmitAssignmentChange} placeholder='Comments' valid={errors.Comments !== false && submitAssignment.Comments !== ""}></Input>      
         </InputGroup>
-        { errors.Comments === false ? <span className='text-danger'>Please Enter Comments</span> : ""}
         </Col>         
       </Row><br/>
       <Row>

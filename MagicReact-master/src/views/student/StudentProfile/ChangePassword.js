@@ -36,7 +36,11 @@ const override: CSSProperties = {
   zIndex:'100'
 }
 
-//const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+
+
+const ChangePasswordTabs = () => {
+  
+  //const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
 const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
 
 const pass = '/^[A-Za-z]\w{7,14}$/'
@@ -46,7 +50,6 @@ const initialValues = {
   retypeNewPassword: ''
 }
 
-const ChangePasswordTabs = () => {
   const [insertValues, setInsertValues] = useState(initialValues)
   const [oldPassword, setOldPassword] = useState('')
 

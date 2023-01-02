@@ -14,7 +14,8 @@ import { Fragment, useState, useEffect, CSSProperties} from 'react'
 import {axiosClient} from '../../../../Client'
 // ** Reactstrap Imports
 import {  Row, Col, Form, Card, CardTitle, Table, Badge, CardHeader } from 'reactstrap'
-
+import {toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import HashLoader from "react-spinners/HashLoader"
 
 const override: CSSProperties = {

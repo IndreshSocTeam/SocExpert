@@ -36,10 +36,11 @@ import { Card, CardHeader, CardBody, CardTitle, CardText, CardLink, Row,
     zIndex:'100'
   }
 
-  //const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
-  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
   const ExperienceDetailsTabs = () => {
 
+  //const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+  
   const [insertValues, setInsertValues] = useState([])
   const [errors, setErrors] = useState({})
   const [radioclicked, setradioClicked] = useState(0)

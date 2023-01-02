@@ -43,11 +43,11 @@ const override: CSSProperties = {
 }
 
 
-//const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
-const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
-
 const PersonalDetailsTabs = () => { 
   
+
+//const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
 
 const [GetPersonalDetails, setGetPersonalDetails] = useState([])  
 

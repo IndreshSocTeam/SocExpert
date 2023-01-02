@@ -32,11 +32,11 @@ const override: CSSProperties = {
   zIndex:'100'
 }
 
-//const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
-const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
 
 const UploadeResumeTabs = () => {
 
+//const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
 
   const [CVDetails, setCVDetails] = useState([])
 

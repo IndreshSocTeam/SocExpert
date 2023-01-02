@@ -30,10 +30,11 @@ const override: CSSProperties = {
   zIndex:'100'
 }
 
-//const localUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
-const localUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
 
   const EnrollmentDetailsTabs = () => {
+    
+    //const localUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+    const localUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
    
     const [userDetails, setUserDetails] = useState([])  
     const [loading, setLoading] = useState(false)  
