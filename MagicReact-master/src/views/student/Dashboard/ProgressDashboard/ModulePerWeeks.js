@@ -2,9 +2,13 @@ import React, {useState, useEffect} from 'react'
 import { Row, Col, Progress, Form, Card, CardText, Input, Label, Button, CardBody, CardTitle, CardHeader, ListGroup, ListGroupItem, TabContent, TabPane, Spinner } from 'reactstrap'
 import classnames from 'classnames'
 import {axiosClient} from '../../../../Client'
+import Cookies from 'js-cookie'
 
 const ModulePerWeeks = () => {
     
+    //const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+    const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+
   const [loading, setLoading] = useState(false)
   const [activeList, setActiveLIst] = useState('1')
   const [Weeks, setWeeks] = useState([])
@@ -12,13 +16,11 @@ const ModulePerWeeks = () => {
 
   const toggleList = list => {
     if (activeList !== list) {
-      setActiveLIst(list)
-      console.log("clicked week", list)       
+      setActiveLIst(list)       
       setLoading(true)      
       axiosClient.get(`ProgressDashboard/GetAllControlersOnWeekNumber?WeekNumber=${list}&CourseId=4`).then((res1) => {
       setChapters(res1.data)
         setLoading(false)
-        console.log("assignents weeks", res1.data)
      }) 
     }
   }
@@ -26,10 +28,9 @@ const ModulePerWeeks = () => {
 
   useEffect(() => {
     setLoading(true)  
-    axiosClient.get(`ProgressDashboard/getWeeksOnStudentId?StudentId=503&CourseId=4`).then((res) => {
+    axiosClient.get(`ProgressDashboard/getWeeksOnStudentId?StudentId=${loggedInUserDetails.StudentId}&CourseId=4`).then((res) => {
       setWeeks(res.data)
       setLoading(false)  
-      console.log("Weeks", res.data) 
   }).catch((error) => {
     console.log(error)
   })  
@@ -47,10 +48,10 @@ const ModulePerWeeks = () => {
       <Row>
         <Col sm='12' lg='2'>
           
-          <ListGroup>
+          <ListGroup className='mb-2'>
           {
-            Weeks.map((w) => (
-          <ListGroupItem  className={classnames('cursor-pointer d-flex', {
+            Weeks.map((w, index) => (
+          <ListGroupItem key={index}  className={classnames('cursor-pointer d-flex', {
             active: activeList === `${w.WeekNumber}`
           })}
           onClick={() => toggleList(`${w.WeekNumber}`)}

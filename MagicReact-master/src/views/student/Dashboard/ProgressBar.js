@@ -1,6 +1,7 @@
 import { Card, CardBody, Progress, UncontrolledTooltip } from 'reactstrap'
 
 import { useEffect, useState, CSSProperties } from 'react'
+import { Link } from "react-router-dom";
 import {axiosClient} from '../../../Client'
 import ClipLoader from "react-spinners/ClipLoader"
 import Cookies from 'js-cookie'
@@ -38,7 +39,7 @@ const ProgressBarDashboard = () => {
   
   return (
    <div> 
-   
+   <Link to='/student/ProgressDashboard/' target='_blank'>
     <Card id='progress'>
       <CardBody>
         <h5>Your Progress</h5>
@@ -78,14 +79,15 @@ const ProgressBarDashboard = () => {
     <br/>
         <div className='d-flex align-items-center me-2 d-inline'>
             <span className='bullet bullet-success me-50'></span>
-            <span>You are here</span>
+            <span className='text-black'>You are here</span>
          </div>
          <div className='d-flex align-items-center d-inline'>
              <span className='bullet bullet-danger me-50'></span>
-             <span>Your batch</span>
+             <span className='text-black'>Your batch</span>
          </div>
     </CardBody>
-    </Card>    
+    </Card>        
+    </Link>
     <UncontrolledTooltip placement='top' target='progress'>
     Check Your Progress
   </UncontrolledTooltip>  

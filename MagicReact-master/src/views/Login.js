@@ -186,7 +186,7 @@ const initialValues = {
           <InputGroupText>
             <User size={14} />
           </InputGroupText> 
-                <Input className={applyErrorClass('EmailAddress')} type='email' id='EmailAddress' placeholder='socexpert.com' value={data.EmailAddress} onChange={(e) => handle(e)} />
+                <Input className={applyErrorClass('EmailAddress')} type='email' id='EmailAddress' name='EmailAddress' placeholder='socexpert.com' value={data.EmailAddress} onChange={(e) => handle(e)} valid={errors.EmailAddress !== false && data.EmailAddress !== ""}/>
                 </InputGroup>
                 { errors.EmailAddress === false ? <span className='text-danger'>Please Enter the EmailAddress</span> : ""}
                 </div>
@@ -199,7 +199,7 @@ const initialValues = {
                     <small>Forgot Password?</small>
                   </Link>
                 </div>
-                <InputPasswordToggle invalid={errors.Password === false} id='Password' value={data.Password} onChange={(e) => handle(e)}/>                
+                <InputPasswordToggle id='Password' name='Password' value={data.Password} onChange={(e) => handle(e)} invalid={errors.Password === false} valid={errors.Password !== false && data.Password !== ""}/>                
                 { errors.Password === false ? <span className='text-danger'>Please Enter the Password</span> : ""}
                 </div>
               <div className='form-check mb-1'>

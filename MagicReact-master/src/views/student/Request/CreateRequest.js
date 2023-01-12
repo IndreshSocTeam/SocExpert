@@ -46,7 +46,6 @@ const override: CSSProperties = {
 
 const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
 const intitalInsertValues = {
-  RequestType: '',
   ShortDescription : '',
   LongDescription : '', 
 }
@@ -114,7 +113,7 @@ useEffect(() => {
       [name]: value
     })
   }
-
+console.log(requestTypeId)
   const handleFormSubmit = e => {
     e.preventDefault()
   }
@@ -147,7 +146,6 @@ useEffect(() => {
     } 
   }
 
-//bsdfbfwefbhfbfwefbdshcv;
 const saveChangesClick = (e) => {
   e.preventDefault()
   if (validate()) {
@@ -162,18 +160,42 @@ const saveChangesClick = (e) => {
       setLoading(true)
       axiosClient.post('Request/CreateTicket', td, {headers: { 
         'Content-Type': 'application/json'
-      }}).then((res) => {
+      }}).then((res) => {        
         setLoading(false)
-        toast.success('Ticket Created Sucessfully', {
-          position: "top-center",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light"
-          })
+        if(res.data === "InSufficient Coins") {
+          toast.error('InSufficient Coins', {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light"
+            })
+        } else if(res.data === "Failed to create ticket"){
+          toast.error('Failed to create ticket', {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light"
+            })
+          }else{
+          toast.success('Ticket Created Sucessfully', {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light"
+            })
+        }       
       }).catch((error) => {
         //console.log(error)
         toast.error('Internal server error')
