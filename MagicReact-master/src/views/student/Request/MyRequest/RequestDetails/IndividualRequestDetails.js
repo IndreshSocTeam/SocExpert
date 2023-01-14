@@ -7,7 +7,6 @@ import Slider from './../RequestDetailSwiper/index'
 
 import {axiosClient} from '../../../../../Client'
 // ** Reactstrap Imports
-import {  Row, Col, Label, Form, Card, CardHeader, CardTitle, Button, CardBody } from 'reactstrap'
 
 
 const MyRequestDetailsPage = () => {

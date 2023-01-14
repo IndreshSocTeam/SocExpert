@@ -91,6 +91,14 @@ const Routes = [
   component: lazy(() => import('../../views/student/Certificate/downloadCertificate'))
 },
 {
+  path: '/student/study/',
+  component: lazy(() => import('../../views/student/Study/'))
+},
+{
+  path: '/student/ChaptersPlaylist/:CourseId',
+  component: lazy(() => import('../../views/student/Study/ChaptersPlaylist'))
+},
+{
   path: '/error',
   component: lazy(() => import('../../views/Error')),
   layout: 'BlankLayout'

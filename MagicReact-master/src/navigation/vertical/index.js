@@ -90,5 +90,11 @@ export default [
     title: 'FAQ',
     icon: <HelpCircle size={12} />,
     navLink: '/student/FAQ/'
+  },
+  {
+    id: 'Study',
+    title: 'Study',
+    icon: <HelpCircle size={12} />,
+    navLink: '/student/Study/'
   }
 ]
