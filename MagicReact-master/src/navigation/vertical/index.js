@@ -1,4 +1,4 @@
-import { Mail, Home, Navigation2, MessageCircle, Gift, Columns, Map, Circle, HelpCircle, User, Activity, BookOpen, Plus, AlertCircle, CreditCard, Edit, Briefcase } from 'react-feather'
+import { Mail, Home, Navigation2, MessageCircle, Gift, Columns, Map, PlayCircle, Circle, HelpCircle, User, Activity, BookOpen, Plus, AlertCircle, CreditCard, Edit, Briefcase } from 'react-feather'
 
 export default [
   {
@@ -6,6 +6,12 @@ export default [
     title: 'Dashboard',
     icon: <Home size={12} />,
     navLink: '/student/Dashboard/'
+  },  
+  {
+    id: 'Study',
+    title: 'Study',
+    icon: <BookOpen size={12} />,
+    navLink: '/student/Study/'
   },
   {
     id: 'StudentProfile',
@@ -90,11 +96,5 @@ export default [
     title: 'FAQ',
     icon: <HelpCircle size={12} />,
     navLink: '/student/FAQ/'
-  },
-  {
-    id: 'Study',
-    title: 'Study',
-    icon: <HelpCircle size={12} />,
-    navLink: '/student/Study/'
   }
 ]

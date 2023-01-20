@@ -48,6 +48,7 @@ useEffect(() => {
         }}
       >
           
+    <Link to={`/student/ChaptersPlaylist/${c.CourseId}`} target='_blank'>
     <Card key={index} sx={{ maxWidth: 345 }} aria-owns={open ? 'mouse-over-popover' : undefined}
     aria-haspopup="true"
     onMouseEnter={handlePopoverOpen}
@@ -71,10 +72,8 @@ useEffect(() => {
         </Typography>
       </CardContent>
     </CardActionArea>
-    <CardActions>
-    <Link to={`/student/ChaptersPlaylist/${c.CourseId}`} target='_blank'>Visit</Link>
-    </CardActions>
     </Card>
+  </Link>
   </Box>
   <Popover
   id="mouse-over-popover"
