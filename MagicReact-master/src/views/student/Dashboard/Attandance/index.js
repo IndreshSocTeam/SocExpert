@@ -5,6 +5,7 @@ import '@styles/base/pages/dashboard-ecommerce.scss'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 import AttandanceScore from './AttandanceScore'
 import AttandanceCalander from '../../Attendance/MyCalandarAttandance'
+import MaterialUicalander from '../../Attendance/materialUICalander'
 import {axiosClient} from '../../../../Client'
 
 import ClipLoader from "react-spinners/ClipLoader"
@@ -53,7 +54,9 @@ const Attandance = () => {
         data-testid="loader"
         speedMultiplier="1"
       />
-        <AttandanceCalander startingDate={new Date()} eventsArr={attandanceReport} />
+        {/*<AttandanceCalander startingDate={new Date()} eventsArr={attandanceReport} />*/}
+        
+        <MaterialUicalander/>
         </Col>
           
   <UncontrolledTooltip placement='top' target='cal'>

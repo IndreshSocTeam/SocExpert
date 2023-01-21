@@ -35,10 +35,8 @@ const Videoplayer = () => {
   const [open, setOpen] = useState('')
   
   const [openSubmenu, setOpenSubMenu] = useState(false)
-  const [beActive, setbeActive] = useState('')
+  const [Checked, setChecked] = useState(false)
   
-
-
   useEffect(() => {
     axiosClient.get(`study/getCourseNameOnCourseId?CourseId=${CourseId}`).then((res) => {
       setloadCourseName(res.data)
@@ -93,7 +91,7 @@ const TabPanel = (props) => {
     <Card variant="outlined">
     <CardActionArea className='p-1 border-bottom'>
     <div style={{position: 'relative', paddingTop: '56.25%'}}>
-    <ReactPlayer width='100%' height="100%" style={{position: 'absolute', top: '0', left: '0', border:'1px solid #fff', boxShadow: 'rgba(0, 0, 0, 0.76) 0px 1px 2px'}} controls url={videoDetails.videoPath === undefined ? 'https://www.youtube.com/watch?v=nLCS31uSh34' : videoDetails.videoPath} light={defaultThumbNail}/>
+    <ReactPlayer width='100%' height="100%" style={{position: 'absolute', top: '0', left: '0', border:'1px solid #fff', boxShadow: 'rgba(0, 0, 0, 0.76) 0px 1px 2px'}} controls url={videoDetails.videoPath === undefined ? 'https://www.youtube.com/watch?v=nLCS31uSh34' : videoDetails.videoPath} light={defaultThumbNail} onEnded={() => setChecked(true)}/>
    </div>
     {/* <Video loop
     controls={['PlayPause', 'Seek', 'Time', 'Volume', 'Fullscreen']}
@@ -170,7 +168,7 @@ const TabPanel = (props) => {
 */}
 
 <nav className='sidebar-menu'>
-         <div class="sidebar-menu-header">
+         <div className='sidebar-menu-header'>
          {
           loadCourseName.map((res, index) => (     
             <h4 key={index} >{res.CourseName}</h4>
@@ -185,7 +183,7 @@ const TabPanel = (props) => {
                {
                 Resources.map((rs, index) => ( 
                <div className={openSubmenu && open === ch.ChapterId ? 'sub-menu-show' : 'sub-menu'} key={index} onClick={() => setVideoDetails({videoPath:rs.ResourcePath, videoName:rs.ResourceName })}>
-               <div className='sub-menu-item'><Checkbox color="primary" style={{ marginLeft: '-30px'}}/> {rs.ResourceName}<p className='duration'><Clock size={15}/> 1 min</p></div>
+               <div className='sub-menu-item'><Checkbox defaultChecked={Checked === true} color="primary" style={{ marginLeft: '-30px'}}/> {rs.ResourceName}<p className='duration'><Clock size={15}/> 1 min</p></div>
                </div>
                ))
               }         
