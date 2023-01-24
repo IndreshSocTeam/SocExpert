@@ -20,7 +20,7 @@ const materialTheme = createTheme({
             pickerView: {
                 minWidth:'300px',
               maxWidth: '100%',
-              height:'auto',
+              height:'auto'
             },
             ['@media (min-width:1500px)']: { // eslint-disable-line no-useless-computed-key
                 fontSize: '32px'

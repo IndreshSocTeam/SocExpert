@@ -362,7 +362,7 @@ const applyErrorClass = field => ((field in errors && errors[field] === false) ?
   return (
     <Fragment>  
       <Card>
-        <CardHeader className='border-bottom' >
+        <CardHeader className='border-bottom'>
           <CardTitle tag='h4'>Profile Details</CardTitle>
         </CardHeader>  
       <HashLoader
