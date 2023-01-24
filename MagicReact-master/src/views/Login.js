@@ -114,11 +114,12 @@ const initialValues = {
         })
         .then((localres) => {
           setLoading(false)
-          localStorage.setItem("loggedInUserDetails", JSON.stringify(localres.data))
-          localStorage.setItem("loggedIn", true)
-          sessionStorage.setItem("loggedInUserDetails", JSON.stringify(localres.data))
-          sessionStorage.setItem("loggedIn", true)
+          // localStorage.setItem("loggedInUserDetails", JSON.stringify(localres.data))
+          // localStorage.setItem("loggedIn", true)
+          // sessionStorage.setItem("loggedInUserDetails", JSON.stringify(localres.data))
+          // sessionStorage.setItem("loggedIn", true)
           Cookies.set('loggedInUserDetails',JSON.stringify(localres.data))
+          Cookies.set("loggedIn", true)
           toast.success('LoggedIn Sucessfully', {
             position: "top-right",
             autoClose: 3000,

@@ -49,7 +49,6 @@ const Router = () => {
         }
       })
     }
-
     return { LayoutRoutes, LayoutPaths }
   }
 
@@ -112,19 +111,13 @@ const Router = () => {
       // ** We segregated all the routes based on the layouts and Resolved all those routes inside layouts
 
       // ** RouterProps to pass them to Layouts
+      
       const routerProps = {}
-
+      
       return (
         <Route path={LayoutPaths} key={index}>
-          <LayoutTag
-            layout={layout}
-            setLayout={setLayout}
-            transition={transition}
-            routerProps={routerProps}
-            setLastLayout={setLastLayout}
-            setTransition={setTransition}
-            currentActiveItem={currentActiveItem}
-          >
+        <ProtectedRoutes Component={LayoutTag}/>
+        <LayoutTag layout={layout} setLayout={setLayout} transition={transition} routerProps={routerProps} setLastLayout={setLastLayout} setTransition={setTransition} currentActiveItem={currentActiveItem} >
             <Switch>
               {LayoutRoutes.map(route => {
                 return (
@@ -145,7 +138,8 @@ const Router = () => {
 
                           {route.layout === 'BlankLayout' ? (
                             <Fragment>
-                              <route.component {...props} />
+                            {/*  <ProtectedRoutes Component={route.component} />*/}
+                            <route.component {...props} />
                             </Fragment>
                           ) : (
                             <LayoutWrapper
@@ -172,7 +166,8 @@ const Router = () => {
                               /*eslint-enable */
                             >
                               <Suspense fallback={null}>
-                                <route.component {...props} />
+                               {/* <ProtectedRoutes Component={route.component} />*/}
+                                <route.component {...props}/>
                               </Suspense>
                             </LayoutWrapper>
                           )}
@@ -222,3 +217,50 @@ const Router = () => {
 }
 
 export default Router
+
+// ***************************************************************************************************************************************
+// import { Suspense, lazy, Fragment } from 'react'
+
+// // ** Utils
+// import { useLayout } from '@hooks/useLayout'
+// import { useRouterTransition } from '@hooks/useRouterTransition'
+
+// // ** Custom Components
+// import LayoutWrapper from '@layouts/components/layout-wrapper'
+
+// // ** Router Components
+// //import { BrowserRouter as AppRouter, Route, Switch, Redirect } from 'react-router-dom'
+
+// import { BrowserRouter, Route, Switch } from 'react-router-dom'
+// // ** Routes & Default Routes
+// import { DefaultRoute, Routes } from './routes'
+// // ** Layouts
+// import BlankLayout from '@layouts/BlankLayout'
+// import VerticalLayout from '@src/layouts/VerticalLayout'
+// import HorizontalLayout from '@src/layouts/HorizontalLayout'
+// import ProtectedRoutes from '@src/services/protectedRoutes'
+// const Login = lazy(() => import('../views/Login'))
+// const Layouts = { BlankLayout, VerticalLayout, HorizontalLayout }
+
+// const Router = () => {
+  
+//   return (
+//     <div>
+//     <BrowserRouter>
+//     <VerticalLayout/>
+//     <Fragment>
+//     <Switch>
+//     <Route exact path={DefaultRoute} component={Login}/>
+//     {
+//       Routes.map((r) => (
+//         <Route path={r.path} component={r.component}/>
+//       ))
+//     }
+//   </Switch>
+//   </Fragment>
+//       </BrowserRouter>
+//     </div>
+//   )
+// }
+
+// export default Router

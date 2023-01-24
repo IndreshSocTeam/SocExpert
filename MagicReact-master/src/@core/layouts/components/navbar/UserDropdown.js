@@ -1,7 +1,10 @@
 // ** React Imports
 import { Link } from 'react-router-dom'
 import { useState, useEffect, CSSProperties } from 'react'
+import { useHistory} from "react-router-dom"
 
+import {toast} from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 // ** Custom Components
 import Avatar from '@components/avatar'
 
@@ -31,6 +34,7 @@ const override: CSSProperties = {
 
 const UserDropdown = () => {
   // ** State
+  const history = useHistory()
   const [userData] = useState(null)
   const [loading, setLoading] = useState(false)
   const userAvatar = (userData && userData.avatar) || defaultAvatar
@@ -58,8 +62,12 @@ const UserDropdown = () => {
 //{(userData && userData['username']) || 'Anand Guru'} in line 53
 
 const handleLogOut = () => {
-  localStorage.clear()
-  sessionStorage.clear()
+  // localStorage.clear()
+  // sessionStorage.clear()
+  Cookies.remove('loggedInUserDetails')  
+  Cookies.remove('loggedIn')
+  history.push('/login')
+  toast.error('Logged Out successfully')
 }
 
   return (

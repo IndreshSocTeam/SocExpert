@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment } from 'react'
+import { Fragment} from 'react'
 
 // ** Custom Components
 import NavbarUser from './NavbarUser'
@@ -10,9 +10,11 @@ import { Menu } from 'react-feather'
 // ** Reactstrap Imports
 import { NavItem, NavLink } from 'reactstrap'
 
+
 const ThemeNavbar = props => {
   // ** Props
   const { skin, setSkin, setMenuVisibility } = props
+  
 
   return (
     <Fragment>

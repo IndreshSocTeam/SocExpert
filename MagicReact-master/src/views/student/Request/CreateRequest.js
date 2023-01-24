@@ -27,6 +27,7 @@ import '@styles/react/pages/page-account-settings.scss'
 import '@styles/react/pages/invalid-error.scss'
 
 import HashLoader from "react-spinners/HashLoader"
+import Cookies from 'js-cookie'
 
 const override: CSSProperties = {
   display:"block",
@@ -44,7 +45,7 @@ const override: CSSProperties = {
   zIndex:'100'
 }
 
-const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+
 const intitalInsertValues = {
   ShortDescription : '',
   LongDescription : '', 
@@ -52,6 +53,8 @@ const intitalInsertValues = {
 
 
 const CreateRequestTab  = () => {
+  // const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
   
   const [insertValues, setInsertValues] = useState(intitalInsertValues)
   const [errors, setErrors] = useState({})
@@ -126,8 +129,7 @@ console.log(requestTypeId)
       const CVFile = e.target.files[0]
       const reader = new FileReader()  
        reader.onload = () => {
-        setCVFile({CVFileName:CVFile.name, CVbaseUrl:reader.result})        
-      console.log("Image result", reader.result)
+        setCVFile({CVFileName:CVFile.name, CVbaseUrl:reader.result})    
       }  
       if (CVFile.size > 800000) {
         toast.error('Image Size Should be less than 800KB', {
@@ -142,7 +144,6 @@ console.log(requestTypeId)
           }) 
       }
       reader.readAsDataURL(CVFile)
-      console.log("fileSelected", CVFile)
     } 
   }
 

@@ -39,7 +39,7 @@ useEffect(() => {
   
     {
       courses.map((c, index) => (
-        <Grid item xs={12} sm={6} lg={4}>
+        <Grid key={index} item xs={12} sm={6} lg={4}>
         <Box
         sx={{
           '&:hover': {
@@ -49,7 +49,7 @@ useEffect(() => {
       >
           
     <Link to={`/student/ChaptersPlaylist/${c.CourseId}`} target='_blank'>
-    <Card key={index} sx={{ maxWidth: 345 }} aria-owns={open ? 'mouse-over-popover' : undefined}
+    <Card sx={{ maxWidth: 345 }} aria-owns={open ? 'mouse-over-popover' : undefined}
     aria-haspopup="true"
     onMouseEnter={handlePopoverOpen}
     onMouseLeave={handlePopoverClose}>

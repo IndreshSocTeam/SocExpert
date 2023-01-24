@@ -52,7 +52,7 @@ const Routes = [
 },
 {
   path: '/student/RequestDetails/:ticketNumberid',
-  component: lazy(() => import('../../views/student/Request/MyRequest/RequestDetails/IndividualRequestDetails'))
+  component: lazy(() => import('../../views/student/Request/MyRequest/RequestDetailSwiper/IndividualRequestDetails'))
 },
 {
   path: '/student/Wallet/api/razorpay/',

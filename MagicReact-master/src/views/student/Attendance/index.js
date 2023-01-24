@@ -20,11 +20,13 @@ import MaterialUicalander from './materialUICalander'
 import '@styles/react/apps/app-calendar.scss'
 
 import '@styles/react/libs/flatpickr/flatpickr.scss'
+import Cookies from 'js-cookie'
 
 
 const CalendarComponent = () => {
   // ** Variables
-  const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
+  //const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
+  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
 
   const [attandanceScores, setAttandanceScores] = useState([])
   const [checkAttandance, setCheckAttandance] = useState('')

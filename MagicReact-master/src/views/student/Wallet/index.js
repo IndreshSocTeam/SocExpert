@@ -5,6 +5,7 @@ import {useState, useEffect } from 'react'
 
 import {toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import Cookies from 'js-cookie'
 
 const Razorpay = require('razorpay')
 
@@ -28,7 +29,8 @@ const initializeRazorpay = () => {
 
 const wallet = () => {
 
-    const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
+   // const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
+    const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
 
     const [NumberOfCoins, setNumberOfCoins] = useState([])
     const [TotalCoinsWithTax, setTotalCoinsWithTax] = useState('')

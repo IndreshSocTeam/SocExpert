@@ -12,6 +12,7 @@ import {axiosClient} from '../../../Client'
 
 import {toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import Cookies from 'js-cookie'
 
 //MuiPickersBasePicker-pickerView
 const materialTheme = createTheme({
@@ -93,7 +94,8 @@ export const styles = makeStyles(() => ({ //define CSS for different date types
 
 const MaterialUICalander = () => {
     
-  const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
+  //const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
+  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
 
     const [selectedDate, handleDateChange] = useState(new Date())    
     const [attandanceReport, setAttandanceReport] = useState([])

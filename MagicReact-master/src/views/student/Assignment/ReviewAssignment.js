@@ -8,6 +8,7 @@ import {axiosClient} from '../../../Client'
 import { Fragment, useState, useEffect, CSSProperties} from 'react'
 // ** Icons Imports
 import { MoreVertical, Edit, Trash } from 'react-feather'
+import Cookies from 'js-cookie'
 
 import {toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -37,7 +38,8 @@ const override: CSSProperties = {
 }
 
 
-const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+//const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
 
 const ReviewAssignmentTable = () => {
   const [assignment, setAssignment] = useState([])  

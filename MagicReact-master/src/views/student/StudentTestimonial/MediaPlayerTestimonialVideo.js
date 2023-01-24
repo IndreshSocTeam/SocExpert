@@ -11,8 +11,6 @@ const MediaPlayerTestimonailVideo = () => {
       axiosClient.get('/Testimonial/GetRecentTestimonial')
     .then((res) => {
       setmediaVideo(res.data)
-     // setUserDetails({...data})
-      console.log("Displayed Data:", res.data)
     })
   }, [])
   

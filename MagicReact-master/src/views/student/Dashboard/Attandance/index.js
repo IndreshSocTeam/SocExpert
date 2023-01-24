@@ -9,6 +9,7 @@ import MaterialUicalander from '../../Attendance/materialUICalander'
 import {axiosClient} from '../../../../Client'
 
 import ClipLoader from "react-spinners/ClipLoader"
+import Cookies from 'js-cookie'
 
 const override: CSSProperties = {
   display:"block",
@@ -20,10 +21,12 @@ const override: CSSProperties = {
   position: "absolute",
 };
 
-const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
 
 
 const Attandance = () => {
+  //const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+
   const [attandanceReport, setAttandanceReport] = useState([])
   const [loading, setLoading] = useState(false)
   useEffect(() => {

@@ -12,7 +12,6 @@ const downloadCertificate = () => {
     useEffect(() => {
         axiosClient.get('Certificate/GetModularCertificateData', {params:{MappId:CertificateId}}).then((res) => {
           setCertificateDetails([res.data])
-          console.log('CertificateDetails',  res.data)
         }).catch((error) => {
           console.log(error)
         })

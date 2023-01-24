@@ -5,10 +5,13 @@ import { Fragment, useState, useEffect} from 'react'
 // ** Reactstrap Imports
 import { Card, CardHeader, CardTitle, CardBody, Row, Col, Label, Button } from 'reactstrap'
 import {axiosClient} from '../../../../../Client'
+import Cookies from 'js-cookie'
 
 // ** Images
-import MyRequestActivityTimeLinePage from './../MyRequestActivityTimeline'
-import MyRequestDetailsPage from './../RequestDetails/IndividualRequestDetails'
+import MyRequestActivityTimeLinePage from './MyRequestActivityTimeline'
+import MyRequestDetailsPage from './IndividualRequestDetails'
+import {toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const params = {
   effect: 'fade',
@@ -19,6 +22,7 @@ const params = {
 }
 
 const SwiperFade = () => {
+  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
     const [GetRequestTicketDetails, setGetRequestTicketDetails] = useState([])   
 
   const {ticketNumberid} = useParams()
@@ -26,11 +30,25 @@ const SwiperFade = () => {
 useEffect(() => {
     axiosClient.get('/Request/GetTicketDetail', {params:{ticketNumber:ticketNumberid}}).then((res) => {
       setGetRequestTicketDetails([res.data])
-      console.log('Request Ticket Detail',  res.data)
     }).catch((error) => {
       console.log(error)
     })
 }, [])
+
+const cancelTicket = () => {
+  const comment = "Request has been Canceled"
+  axiosClient.post(`/Request/CancelTicket?TicketNumber=${ticketNumberid}&UserId=${loggedInUserDetails.StudentId}`).then(
+    axiosClient.post(`/Request/AddNote?Comment=${comment}&TicketNumber=${ticketNumberid}&TypeId=2&UserId=${loggedInUserDetails.StudentId}`).then(
+    toast.success("Ticket Canceled")
+      ).catch((error) => {
+        //console.log(error)
+        toast.error("Internal Server Error")
+      })
+  ).catch((error) => {
+    //console.log(error)
+    toast.error("Internal Server Error")
+  })
+}
 
   return (
     <Card>
@@ -86,7 +104,7 @@ useEffect(() => {
         <Col lg='3' sm='12'>
             <Col lg='12'>
         <Label for='Date'>
-        Date
+        Date:
         </Label>
         <Label for='Date'>
         <b>
@@ -97,7 +115,7 @@ useEffect(() => {
         <Label for='RequestType'>
         Request Type
         </Label>
-        <Label for='RequestType'>
+        <Label for='RequestType' htmlFor="text">
         <b>{curEle.RequestType}</b>
         </Label>   
         </Col> 
@@ -120,9 +138,13 @@ useEffect(() => {
         </Col>
         <Col lg='3' sm='12'>
             <br/>
-        <Button type='button' className='me-1' color='primary'>
+            {
+              curEle.State === 'New' && (
+        <Button type='button' className='me-1' color='primary' onClick={cancelTicket}>
                   Cancel Ticket
-                </Button>
+                </Button>                
+                )
+            }
         </Col>
         </Row>
         <Row>

@@ -17,6 +17,7 @@ import {  Row, Col, Form, Card, CardTitle, Table, Badge, CardHeader } from 'reac
 import {toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import HashLoader from "react-spinners/HashLoader"
+import Cookies from 'js-cookie'
 
 const override: CSSProperties = {
   display:"block",
@@ -34,9 +35,12 @@ const override: CSSProperties = {
   zIndex:'100'
 }
 
-const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+
 
 const MyRequestTab = () => {
+  // const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+
   const [search, setSearch] =  useState('')
     const [requests, setRequests] =  useState([])    
     const [filterTable, setfilterTable] =  useState([])

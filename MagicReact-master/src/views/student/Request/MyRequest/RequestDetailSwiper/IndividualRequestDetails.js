@@ -1,26 +1,23 @@
-import { Link } from 'react-router-dom'
+
+import { Link, useParams } from 'react-router-dom'
 
 import { Fragment, useState, useEffect} from 'react'
-import Slider from './RequestDetailSwiper/index'
+import Slider from './index'
 // ** Icons Imports
 
-import {axiosClient} from '../../../../Client'
+import {axiosClient} from '../../../../../Client'
 // ** Reactstrap Imports
-import {  Row, Col, Label, Form, Card, CardHeader, CardTitle, Button, CardBody } from 'reactstrap'
 
 
 const MyRequestDetailsPage = () => {
 
   const [GetRequestTicketDetails, setGetRequestTicketDetails] = useState([])   
 
-useEffect((selectedTicketNumber) => {
-    axiosClient.get('/Request/GetTicketDetail', {
-      params:{
-        ticketNumber:selectedTicketNumber
-      }
-    }).then((res) => {
+  const {ticketNumberid} = useParams()
+  
+useEffect(() => {
+    axiosClient.get('/Request/GetTicketDetail', {params:{ticketNumber:ticketNumberid}}).then((res) => {
       setGetRequestTicketDetails([res.data])
-      console.log('Request Ticket Detail',  res.data)
     }).catch((error) => {
       console.log(error)
     })
@@ -29,11 +26,8 @@ useEffect((selectedTicketNumber) => {
 
   return (
     <Fragment>
-      <Row>
       <Slider/>
-      </Row>
-    <Card title='Review Assignment'>
-    
+    {/* <Card title='Review Assignment'>
     <CardHeader className='border-bottom'>
     <CardTitle tag='h4'>Request Details</CardTitle>
   </CardHeader>
@@ -63,7 +57,7 @@ useEffect((selectedTicketNumber) => {
         Cyber Genie
         </Label>
         <Label for='Genie' className='col-2'>
-        <b>{curEle.StudentName}</b>
+        <b>{curEle.AssignedUser}</b>
         </Label>
         </Col>
         </Row>
@@ -89,17 +83,18 @@ useEffect((selectedTicketNumber) => {
         SE-Coin spend
         </Label>
         <Label for='SECoin' className='col-2'>
-        <b>{curEle.CreatedDate}</b>        
+        <b>{curEle.Coin}</b>        
         </Label>
         <Label for='RequestSubType'className='col-2'>
         Request Sub-Type
         </Label>
         <Label for='RequestSubType' className='col-2'>
-        <b>Networks{curEle.AssignedType}</b>
+        <b>{curEle.AssignedType}</b>
         </Label>               
         </Col>
         </Row> <br/>
-        Description: <b>{curEle.ShortDescription}</b>   
+        Short Description: <b>{curEle.ShortDescription}</b>   <br/>
+        Long Description: <b>{curEle.LongDescription}</b>   
         </Col>
         </Row>
         <Col className='mt-2' sm='12'>
@@ -111,7 +106,7 @@ useEffect((selectedTicketNumber) => {
               
       ))
     }
-        </Card>
+        </Card> */}
       </Fragment>
     
   )

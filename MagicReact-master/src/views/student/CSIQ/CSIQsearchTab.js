@@ -35,9 +35,11 @@ const override: CSSProperties = {
   zIndex:'100'
 }
 
-const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
 
 const CSIQsearch = () => {
+  
+  const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+
   const [btnCompany, setbtnCompany] = useState([])
 
   const [CSIQSearch, setCSIQsearch] = useState([])

@@ -13,11 +13,14 @@ import 'react-toastify/dist/ReactToastify.css'
 
 import '@styles/react/pages/invalid-error.scss'
 
-import {axiosClient} from '../../../../Client'
+import {axiosClient} from '../../../../../Client'
+import Cookies from 'js-cookie'
 
 const MyRequestActivityTimeLinePage = () => {
 
-  const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+  //const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+
   const {ticketNumberid} = useParams()
 
   const intialValues = {
@@ -34,7 +37,6 @@ const MyRequestActivityTimeLinePage = () => {
       ...comments,
       [name]: value
     })
-    console.log("Comments", comments)
   }
 
   const validate = () => {
@@ -51,8 +53,7 @@ const MyRequestActivityTimeLinePage = () => {
       const CVFile = e.target.files[0]
       const reader = new FileReader()  
        reader.onload = () => {
-        setCVFile({CVFileName:CVFile.name, CVbaseUrl:reader.result})        
-      console.log("Image result", reader.result)
+        setCVFile({CVFileName:CVFile.name, CVbaseUrl:reader.result})  
       }  
       if (CVFile.size > 800000) {
         toast.error('Image Size Should be less than 800KB', {
@@ -67,7 +68,6 @@ const MyRequestActivityTimeLinePage = () => {
           }) 
       }
       reader.readAsDataURL(CVFile)
-      console.log("fileSelected", CVFile)
     } 
   }
 
@@ -77,9 +77,7 @@ const MyRequestActivityTimeLinePage = () => {
     e.preventDefault()
     if (validate()) {        
       axiosClient.post(`Request/AddNote?Comment=${comments.comment}&UserId=${loggedInUserDetails.StudentId}&TypeId=1&TicketNumber=${ticketNumberid}`).then((res) => {
-        console.log('AddNote',  res.data)
-      axiosClient.post(`/Request/AddAttachment?UserId=${loggedInUserDetails.StudentId}&RequestName=${CVfile.CVFileName}&RequestPath=${CVfile.CVbaseUrl}`).then((res2) => {      
-      console.log('Add Attachment',  res2.data)
+       axiosClient.post(`/Request/AddAttachment?UserId=${loggedInUserDetails.StudentId}&RequestName=${CVfile.CVFileName}&RequestPath=${CVfile.CVbaseUrl}`).then((res2) => {      
       toast.success('Uploaded Sucessfully', {
                   position: "top-center",
                   autoClose: 2000,

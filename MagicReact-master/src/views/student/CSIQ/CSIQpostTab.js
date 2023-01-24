@@ -23,6 +23,7 @@ import DataTable from "react-data-table-component"
 import '@styles/react/pages/invalid-error.scss'
 
 import HashLoader from "react-spinners/HashLoader"
+import Cookies from 'js-cookie'
 
 const override: CSSProperties = {
   display:"block",
@@ -41,7 +42,6 @@ const override: CSSProperties = {
 }
 
 
-const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
 
 const intitalInsertValues = {
   Company : '',
@@ -52,7 +52,8 @@ const intitalInsertValues = {
   Questions:''
 }
 const CSIQpost = () => {
-  
+  //const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
   const [CSIQquestions, setCSIQquestions] = useState(intitalInsertValues)
 
   const [CSIQquestionsTable, setCSIQquestionsTable] = useState([])

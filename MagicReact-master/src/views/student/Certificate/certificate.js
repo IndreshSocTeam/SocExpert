@@ -6,19 +6,24 @@ import 'react-toastify/dist/ReactToastify.css'
 import {axiosClient} from '../../../Client'
 import CertificateImg from '@src/assets/images/student/certificateImg.jpg'
 import CourseCompletion from '@src/assets/images/student/CourseCompletion.png'
+import Cookies from 'js-cookie'
+
 // /Certificate/GetDownloadableCertificates
 // [Route("api/Certificate/isCourseCompletionCertificateAvilable")]
 
-const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
 
-const certificate = () => {
+const certificate = () => {  
+  //const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
+  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+
     const [certified, setCertified] = useState([])
+    
     useEffect(() => {
-        axiosClient.get(`Certificate/GetDownloadableCertificates?StudentId=859`).then((res) => {
+        axiosClient.get(`Certificate/GetDownloadableCertificates?StudentId=${loggedInUserDetails.StudentId}`).then((res) => {
             setCertified(res.data)
-            console.log("iscertified", res.data)
         }).catch((error) => {
-          console.log(error)
+          //console.log(error)
+          toast.error('Internal Server Error')
         })
     }, [])
     
