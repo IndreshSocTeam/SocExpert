@@ -196,7 +196,6 @@ const Router = () => {
             return <Redirect to={DefaultRoute} />
           }}
         />
-        <Route path='/' element={<ProtectedRoutes Component={StudentProfile}/>}> </Route>
         {/* Not Auth Route */}
         <Route
           exact

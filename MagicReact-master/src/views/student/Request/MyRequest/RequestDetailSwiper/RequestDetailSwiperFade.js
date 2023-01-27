@@ -13,6 +13,7 @@ import MyRequestDetailsPage from './IndividualRequestDetails'
 import {toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
+
 const params = {
   effect: 'fade',
   navigation: true,
@@ -65,12 +66,12 @@ const cancelTicket = () => {
     GetRequestTicketDetails.map((curEle, index) => (
    
   <CardBody key={index} className='py-2 my-25 p-2'>
-      <Row>
+     <Row>
         <Col sm='12'>
         <Row>
         <Col sm='12' lg='3'> 
         <Col lg='12'>      
-        <Label for='RequestID' className=''>
+        <Label for='RequestID' className='p-1'>
         Request ID:
         </Label>
         <Label for='RequestID' className=''>
@@ -80,7 +81,7 @@ const cancelTicket = () => {
         </Col> 
 
         <Col lg='12'>
-        <Label for='Status'>
+        <Label for='Status' className='p-1'>
         Status
         </Label>
         <Label for='Status' >
@@ -89,7 +90,7 @@ const cancelTicket = () => {
         </Col>
 
         <Col lg='12'>
-        <Label for='SECoin'>
+        <Label for='SECoin' className='p-1'>
         SE-Coin spend
         </Label>
         <Label for='SECoin'>
@@ -98,12 +99,12 @@ const cancelTicket = () => {
            <br/>
         
         </Col>
-        <Col lg='12'>Short Description: <b>{curEle.ShortDescription}</b></Col>
-        <Col lg='12'>Long Description: <b>{curEle.LongDescription}</b>  </Col>
+        <Col lg='12' className='p-1'>Short Description: <b>{curEle.ShortDescription}</b></Col>
+        <Col lg='12' className='p-1'>Long Description: <b>{curEle.LongDescription}</b>  </Col>
         </Col>
         <Col lg='3' sm='12'>
             <Col lg='12'>
-        <Label for='Date'>
+        <Label for='Date' className='p-1'>
         Date:
         </Label>
         <Label for='Date'>
@@ -112,7 +113,7 @@ const cancelTicket = () => {
         </Label> 
         </Col>
         <Col lg='12'>
-        <Label for='RequestType'>
+        <Label for='RequestType' className='p-1'>
         Request Type
         </Label>
         <Label for='RequestType' htmlFor="text">
@@ -120,7 +121,7 @@ const cancelTicket = () => {
         </Label>   
         </Col> 
         <Col lg='12'>
-        <Label for='RequestSubType'>
+        <Label for='RequestSubType' className='p-1'>
         Request Sub-Type
         </Label>
         <Label for='RequestSubType'>
@@ -129,7 +130,7 @@ const cancelTicket = () => {
         </Col>
         </Col> 
         <Col lg='3' sm='12'>     
-        <Label for='Genie'>
+        <Label for='Genie' className='m-2'>
         Cyber Genie
         </Label>
         <Label for='Genie'>
@@ -155,8 +156,7 @@ const cancelTicket = () => {
         </Row>        
         
         </Col>
-        </Row>
-    
+          </Row>
               </CardBody>  
               
       ))

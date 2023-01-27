@@ -18,7 +18,26 @@ import {toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import HashLoader from "react-spinners/HashLoader"
 import Cookies from 'js-cookie'
+import MUIDataTable from "mui-datatables";
+import { DataGrid} from '@mui/x-data-grid';
+import { Box, withStyles } from "@material-ui/core";
 
+const StyledDataGrid = withStyles({
+  root: {
+    "& .MuiDataGrid-renderingZone": {
+      maxHeight: "none !important",
+      height:'300px'
+    },
+    "& .MuiDataGrid-cell": {
+      lineHeight: "unset !important",
+      maxHeight: "none !important",
+      whiteSpace: "normal"
+    },
+    "& .MuiDataGrid-row": {
+      maxHeight: "none !important"
+    }
+  }
+})(DataGrid);
 const override: CSSProperties = {
   display:"block",
   margin: "auto",
@@ -67,7 +86,8 @@ const MyRequestTab = () => {
     {
       name: "Submission ID",
       selector: (row) => <Link to={`/student/RequestDetails/${row.Number}`} target='_blank'>{`${row.Number}`}</Link>,
-      sortable: true
+      sortable: true,
+      width:'150px',
     },
     {
       name: "Date",
@@ -103,7 +123,7 @@ const MyRequestTab = () => {
     {
       name: "Last Update",
       selector: (row) => row.LastStatusUpdate.map((ls) => ls.Note), 
-      sortable: true 
+      sortable: true,
        }
   ]
 
@@ -112,11 +132,35 @@ const MyRequestTab = () => {
   }, [])
 
   useEffect(() => {
-    const result = requests.filter(Requestsfunc => {
-      return Requestsfunc.toString().match(search.toLowerCase())
-    })
+    const result = requests.filter((item) => item.name && item.name.toLowerCase().includes(search.toLowerCase()))
+
     setfilterTable(result)
   }, [search])
+
+
+  
+  const customStyles = {
+    rows: {
+        style: {
+            minHeight: '72px', // override the row height
+        },
+    },
+    headCells: {
+        style: {
+            borderRight:'2px solid rgba(76, 78, 100, 0.12)', // override the cell padding for head cells
+            
+        },
+    },
+    cells: {
+        style: {
+            paddingLeft: '3px', // override the cell padding for data cells
+            paddingRight: '3px',
+            width:'150px',
+        },
+    }
+        
+};
+
 
 
   return (
@@ -136,18 +180,26 @@ const MyRequestTab = () => {
         </CardHeader>
   <DataTable //title="Request Table"
   columns={columns} 
-  data={filterTable}//{Requests}
+  data={requests.filter((item) => {
+    if (search === "") {
+      return item;
+    } else if (
+      item.name.toLowerCase().includes(search.toLowerCase())
+    ) {
+      return item;
+    }
+  })}//{Requests}
   pagination
   fixedHeader  
   responsive={true}
   className='react-dataTable'
+  striped={true}
   subHeader
   subHeaderComponent={<input type="text" name='search' id='search' placeholder="Search Here" className="w-25 form-control" 
   onChange={(e) => setSearch(e.target.value)}/>}
   subHeaderAlign="right"
   value={search}
   highlightOnHover/>
-  
       </Card>
       </Fragment>
     
