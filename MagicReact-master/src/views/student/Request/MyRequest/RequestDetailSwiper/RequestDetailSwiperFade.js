@@ -12,6 +12,7 @@ import MyRequestActivityTimeLinePage from './MyRequestActivityTimeline'
 import MyRequestDetailsPage from './IndividualRequestDetails'
 import {toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import {AES, enc} from 'crypto-js'
 
 
 const params = {
@@ -23,7 +24,9 @@ const params = {
 }
 
 const SwiperFade = () => {
-  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+  //const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+const loggedInUserDetails = JSON.parse(AES.decrypt(Cookies.get("loggedInUserDetails"), 'secret-key').toString(enc.Utf8))
+
     const [GetRequestTicketDetails, setGetRequestTicketDetails] = useState([])   
 
   const {ticketNumberid} = useParams()

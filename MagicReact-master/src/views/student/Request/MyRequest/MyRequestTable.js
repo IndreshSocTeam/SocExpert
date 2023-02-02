@@ -21,6 +21,7 @@ import Cookies from 'js-cookie'
 import MUIDataTable from "mui-datatables";
 import { DataGrid} from '@mui/x-data-grid';
 import { Box, withStyles } from "@material-ui/core";
+import {AES, enc} from 'crypto-js'
 
 const StyledDataGrid = withStyles({
   root: {
@@ -58,7 +59,8 @@ const override: CSSProperties = {
 
 const MyRequestTab = () => {
   // const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
-  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+  //const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+const loggedInUserDetails = JSON.parse(AES.decrypt(Cookies.get("loggedInUserDetails"), 'secret-key').toString(enc.Utf8));
 
   const [search, setSearch] =  useState('')
     const [requests, setRequests] =  useState([])    

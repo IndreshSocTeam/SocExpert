@@ -7,6 +7,7 @@ import {axiosClient} from '../../../Client'
 import CertificateImg from '@src/assets/images/student/certificateImg.jpg'
 import CourseCompletion from '@src/assets/images/student/CourseCompletion.png'
 import Cookies from 'js-cookie'
+import {AES, enc} from 'crypto-js'
 
 // /Certificate/GetDownloadableCertificates
 // [Route("api/Certificate/isCourseCompletionCertificateAvilable")]
@@ -14,7 +15,9 @@ import Cookies from 'js-cookie'
 
 const certificate = () => {  
   //const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
-  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+  //const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+  const loggedInUserDetails = JSON.parse(AES.decrypt(Cookies.get("loggedInUserDetails"), 'secret-key').toString(enc.Utf8));
+
 
     const [certified, setCertified] = useState([])
     

@@ -22,6 +22,7 @@ import defaultAvatar from '@src/assets/images/avatars/avatar-blank.png'
 import ClipLoader from "react-spinners/ClipLoader"
 import {axiosClient} from '../../../../Client'
 import Cookies from 'js-cookie'
+import {AES, enc} from 'crypto-js'
 
 const override: CSSProperties = {
   display:"block",
@@ -32,6 +33,23 @@ const override: CSSProperties = {
   position: "absolute",
 };
 
+
+// import Cookies from 'js-cookie';
+// // Set a cookie
+// Cookies.set('name', 'value', { expires: 7 });
+// // Get a cookie
+// const value = Cookies.get('name');
+// // Remove a cookie
+// Cookies.remove('name');
+
+// import CryptoJS from 'crypto-js';
+// // Encrypt the cookie
+// const encryptedValue = CryptoJS.AES.encrypt(value, 'secret key').toString();
+// // Store the encrypted cookie
+// Cookies.set('name', encryptedValue, { expires: 7 });
+// // Get and decrypt the cookie
+// const decryptedValue = CryptoJS.AES.decrypt(Cookies.get('name'), 'secret key').toString(CryptoJS.enc.Utf8);
+
 const UserDropdown = () => {
   // ** State
   const history = useHistory()
@@ -40,8 +58,12 @@ const UserDropdown = () => {
   const userAvatar = (userData && userData.avatar) || defaultAvatar
 
  // const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))  
-  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
-  
+  //const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+ 
+  const loggedInUserDetails = JSON.parse(AES.decrypt(Cookies.get("loggedInUserDetails"), 'secret-key').toString(enc.Utf8));
+ 
+ 
+
   const [userNavDetails, setUserNavDetails] = useState([])  
   
   useEffect(() => {

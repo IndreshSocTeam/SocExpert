@@ -5,6 +5,7 @@ import {axiosClient} from '../../../Client'
 
 import ClipLoader from "react-spinners/ClipLoader"
 import Cookies from 'js-cookie'
+import {AES, enc} from 'crypto-js'
 
 const override: CSSProperties = {
   display:"block",
@@ -19,7 +20,9 @@ const override: CSSProperties = {
 const ReadyForPlacement = () => {
 
   //const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
-  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+  //const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+  const loggedInUserDetails = JSON.parse(AES.decrypt(Cookies.get("loggedInUserDetails"), 'secret-key').toString(enc.Utf8));
+ 
 
     const [readyForPlacement, setreadyForPlacement] = useState([])
     const [centeredModal, setCenteredModal] = useState(false)

@@ -3,11 +3,13 @@ import { Row, Col, Progress, Form, Card, CardText, Input, Label, Button, CardBod
 import classnames from 'classnames'
 import {axiosClient} from '../../../../Client'
 import Cookies from 'js-cookie'
+import {AES, enc} from 'crypto-js'
 
 const ModulePerWeeks = () => {
     
     //const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
-    const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+    //const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+    const loggedInUserDetails = JSON.parse(AES.decrypt(Cookies.get("loggedInUserDetails"), 'secret-key').toString(enc.Utf8));
 
   const [loading, setLoading] = useState(false)
   const [activeList, setActiveLIst] = useState('1')

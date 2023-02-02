@@ -6,6 +6,7 @@ import {axiosClient} from '../../../../Client'
 
 import ClipLoader from "react-spinners/ClipLoader"
 import Chart from 'react-apexcharts'
+import {AES, enc} from 'crypto-js'
 
 const override: CSSProperties = {
   display:"block",
@@ -24,7 +25,9 @@ import Cookies from 'js-cookie'
 const AssignmentsOverview = () => {
     // ** State
     //const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
-    const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+    //const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+    const loggedInUserDetails = JSON.parse(AES.decrypt(Cookies.get("loggedInUserDetails"), 'secret-key').toString(enc.Utf8));
+
     const [dashboardScores, setDashboardScores] = useState([])
     const [loading, setLoading] = useState(false)
   
@@ -60,15 +63,15 @@ const AssignmentsOverview = () => {
               },
               total: {
                 show: true,
-                label: 'Total',
+                label: 'Completed',
                 fontSize: '1.286rem',
                 colors: '#5e5873',
-                fontWeight: '500'
+                fontWeight: '500',
   
-                // formatter() {
-                //   // By default this function returns the average of all series. The below is just an example to show the use of custom formatter function
-                //   return 42459
-                // }
+                formatter : function (value) {
+                  // By default this function returns the average of all series. The below is just an example to show the use of custom formatter function
+                 return value.config.series[0]
+                }
               }
             }
           }

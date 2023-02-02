@@ -25,6 +25,7 @@ import defaultAvatar from '@src/assets/images/avatars/avatar-blank.png'
 import '@styles/react/pages/invalid-error.scss'
 import HashLoader from "react-spinners/HashLoader"
 import Cookies from 'js-cookie'
+import {AES, enc} from 'crypto-js'
 
 const override: CSSProperties = {
   display:"block",
@@ -47,8 +48,9 @@ const PersonalDetailsTabs = () => {
   
 
 //const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
-const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
-
+//const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+const loggedInUserDetails = JSON.parse(AES.decrypt(Cookies.get("loggedInUserDetails"), 'secret-key').toString(enc.Utf8));
+ 
 const [GetPersonalDetails, setGetPersonalDetails] = useState([])  
 
 const [country, setCountry] = useState([])

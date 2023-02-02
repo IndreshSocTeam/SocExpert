@@ -13,6 +13,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import '@styles/react/pages/invalid-error.scss'
 import HashLoader from "react-spinners/HashLoader"
 import Cookies from 'js-cookie'
+import {AES, enc} from 'crypto-js';
 
 const override: CSSProperties = {
   display:"block",
@@ -118,7 +119,9 @@ const initialValues = {
           // localStorage.setItem("loggedIn", true)
           // sessionStorage.setItem("loggedInUserDetails", JSON.stringify(localres.data))
           // sessionStorage.setItem("loggedIn", true)
-          Cookies.set('loggedInUserDetails',JSON.stringify(localres.data))
+          const encryptData = AES.encrypt(JSON.stringify(localres.data), 'secret-key').toString();
+          Cookies.set('loggedInUserDetails', encryptData, { expires: 30 })
+          //Cookies.set('loggedInUserDetails', JSON.stringify(localres.data), { expires: 30 })
           Cookies.set("loggedIn", true)
           toast.success('LoggedIn Sucessfully', {
             position: "top-right",

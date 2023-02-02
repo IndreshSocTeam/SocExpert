@@ -20,6 +20,7 @@ import DataTable from "react-data-table-component"
 import Breadcrumbs from '@components/breadcrumbs'
 
 import HashLoader from "react-spinners/HashLoader"
+import {AES, enc} from 'crypto-js'
 
 const override: CSSProperties = {
   display:"block",
@@ -38,10 +39,12 @@ const override: CSSProperties = {
 }
 
 
-//const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
-const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
 
 const ReviewAssignmentTable = () => {
+  //const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
+//const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+const loggedInUserDetails = JSON.parse(AES.decrypt(Cookies.get("loggedInUserDetails"), 'secret-key').toString(enc.Utf8));
+
   const [assignment, setAssignment] = useState([])  
   const [assignmentId, setAssignmentId] = useState('')
   

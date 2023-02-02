@@ -15,6 +15,7 @@ import '@styles/react/pages/invalid-error.scss'
 import {axiosClient} from '../../../Client'
 import HashLoader from "react-spinners/HashLoader"
 import Cookies from 'js-cookie'
+import {AES, enc} from 'crypto-js'
 
 const override: CSSProperties = {
   display:"block",
@@ -36,7 +37,8 @@ const override: CSSProperties = {
 const UploadeResumeTabs = () => {
 
 //const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
-const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+//const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+const loggedInUserDetails = JSON.parse(AES.decrypt(Cookies.get("loggedInUserDetails"), 'secret-key').toString(enc.Utf8));
 
   const [CVDetails, setCVDetails] = useState([])
 

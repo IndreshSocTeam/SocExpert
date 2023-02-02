@@ -19,6 +19,7 @@ import { Card, CardHeader, CardBody, CardTitle, CardText, CardLink, Row,
   import { axiosClient } from '../../../Client'
   import HashLoader from "react-spinners/HashLoader"
   import Cookies from 'js-cookie'
+  import {AES, enc} from 'crypto-js'
 
   const override: CSSProperties = {
     display:"block",
@@ -39,8 +40,9 @@ import { Card, CardHeader, CardBody, CardTitle, CardText, CardLink, Row,
   const ExperienceDetailsTabs = () => {
 
   //const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
-  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
-  
+  //const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+  const loggedInUserDetails = JSON.parse(AES.decrypt(Cookies.get("loggedInUserDetails"), 'secret-key').toString(enc.Utf8));
+
   const [insertValues, setInsertValues] = useState([])
   const [errors, setErrors] = useState({})
   const [radioclicked, setradioClicked] = useState(0)

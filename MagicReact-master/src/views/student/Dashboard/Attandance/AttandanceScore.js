@@ -9,6 +9,7 @@ import { useState, useEffect, CSSProperties} from 'react'
 import Chart from 'react-apexcharts'
 import ClipLoader from "react-spinners/ClipLoader"
 import Cookies from 'js-cookie'
+import {AES, enc} from 'crypto-js'
 
 const override: CSSProperties = {
   display:"block",
@@ -22,7 +23,9 @@ const override: CSSProperties = {
 
 const AttandanceScore = () => {
   //const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
-  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+  //const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+  const loggedInUserDetails = JSON.parse(AES.decrypt(Cookies.get("loggedInUserDetails"), 'secret-key').toString(enc.Utf8));
+
   const [attandanceScores, setAttandanceScores] = useState([])
   const [loading, setLoading] = useState(false)
 
@@ -67,7 +70,7 @@ const AttandanceScore = () => {
               show: false
             },
             value: {
-              color: '#5e5873',
+              color: '#74c9d4',
               fontFamily: 'Montserrat',
               fontSize: '1.56rem',
               fontWeight: '600'
@@ -82,7 +85,7 @@ const AttandanceScore = () => {
           shade: 'dark',
           type: 'horizontal',
           shadeIntensity: 0.5,
-          gradientToColors: '#5e5873',
+          gradientToColors: '#74c9d4',
           inverseColors: true,
           opacityFrom: 1,
           opacityTo: 1,
@@ -117,7 +120,7 @@ const AttandanceScore = () => {
                 <Row key={index}>
                 
                 <Col lg='12' xs='6' sm='6' style = {{marginTop : -30}}> 
-                <Chart options={options} series={[(getAttandanceScores.PresentAttandance / getAttandanceScores.TotalAttandance) * 100]} type='radialBar' height={135} />         
+                <Chart options={options} series={[parseInt((getAttandanceScores.PresentAttandance / getAttandanceScores.TotalAttandance) * 100)]} type='radialBar' height={135} />         
              <p className='text-center'> Precentage</p>
                 </Col> 
                   <Col lg='12' xs='6' sm='6'>

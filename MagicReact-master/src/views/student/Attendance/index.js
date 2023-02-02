@@ -21,12 +21,14 @@ import '@styles/react/apps/app-calendar.scss'
 
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 import Cookies from 'js-cookie'
+import {AES, enc} from 'crypto-js'
 
 
 const CalendarComponent = () => {
   // ** Variables
   //const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
-  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+  //const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+  const loggedInUserDetails = JSON.parse(AES.decrypt(Cookies.get("loggedInUserDetails"), 'secret-key').toString(enc.Utf8));
 
   const [attandanceScores, setAttandanceScores] = useState([])
   const [checkAttandance, setCheckAttandance] = useState('')

@@ -7,6 +7,7 @@ import '@src/@core/scss/react/libs/charts/apex-charts.scss'
 import ClipLoader from "react-spinners/ClipLoader"
 import Chart from 'react-apexcharts'
 import Cookies from 'js-cookie'
+import {AES, enc} from 'crypto-js'
 
 const override: CSSProperties = {
   display:"block",
@@ -21,7 +22,9 @@ const override: CSSProperties = {
 const RequestByTypeOverview = () => {
 
     //const loggedInUserDetails = JSON.parse(sessionStorage.getItem("loggedInUserDetails"))
-    const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+   // const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+   const loggedInUserDetails = JSON.parse(AES.decrypt(Cookies.get("loggedInUserDetails"), 'secret-key').toString(enc.Utf8));
+ 
     const [requestScores, setRequestScores] = useState([])
     const [loading, setLoading] = useState(false)
   
@@ -231,11 +234,11 @@ Your Average Mock Scores
              </div>
              <div className='d-flex align-items-center d-inline'>
                 
-                 <span className='bullet bullet-danger me-50'></span>
+                 <span className='bullet bullet-warning me-50'></span>
                  <span>Borrow Experience - {getRequestScores.BorrowExperience}</span>
              </div>
              <div className='d-flex align-items-center d-inline'>
-                 <span className='bullet bullet-warning me-50'></span>
+                 <span className='bullet bullet-danger me-50'></span>
                  <span>CV Review - {getRequestScores.CVReview}</span>
              </div>
                 </CardBody>

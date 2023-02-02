@@ -13,6 +13,7 @@ import {axiosClient} from '../../../Client'
 import {toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Cookies from 'js-cookie'
+import {AES, enc} from 'crypto-js'
 
 //MuiPickersBasePicker-pickerView
 const materialTheme = createTheme({
@@ -95,7 +96,8 @@ export const styles = makeStyles(() => ({ //define CSS for different date types
 const MaterialUICalander = () => {
     
   //const loggedInUserDetails = JSON.parse(localStorage.getItem("loggedInUserDetails"))
-  const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+  //const loggedInUserDetails = JSON.parse(Cookies.get("loggedInUserDetails"))
+  const loggedInUserDetails = JSON.parse(AES.decrypt(Cookies.get("loggedInUserDetails"), 'secret-key').toString(enc.Utf8));
 
     const [selectedDate, handleDateChange] = useState(new Date())    
     const [attandanceReport, setAttandanceReport] = useState([])
