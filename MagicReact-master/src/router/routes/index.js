@@ -112,6 +112,11 @@ const Routes = [
   path: '/verifyAccount',
   component: lazy(() => import('../../views/verifyAccount')),
   layout: 'BlankLayout'
+},
+{
+  path: '/AdminDashboard',
+  component: lazy(() => import('../../views/Admin/Dashboard')),
+  layout: 'BlankLayout'
 }
 ]
 

@@ -12,7 +12,7 @@ import LayoutWrapper from '@layouts/components/layout-wrapper'
 import { BrowserRouter as AppRouter, Route, Switch, Redirect } from 'react-router-dom'
 
 // ** Routes & Default Routes
-import { DefaultRoute, Routes } from './routes'
+import { DefaultRoute, Routes, AdminRoute } from './routes'
 
 // ** Layouts
 import BlankLayout from '@layouts/BlankLayout'
@@ -20,7 +20,6 @@ import VerticalLayout from '@src/layouts/VerticalLayout'
 import HorizontalLayout from '@src/layouts/HorizontalLayout'
 import ProtectedRoutes from '@src/services/protectedRoutes'
 
-import StudentProfile from '@src/views/student/StudentProfile'
 const Router = () => {
   // ** Hooks
   const { layout, setLayout, setLastLayout } = useLayout()
@@ -113,10 +112,9 @@ const Router = () => {
       // ** RouterProps to pass them to Layouts
       
       const routerProps = {}
-      
       return (
         <Route path={LayoutPaths} key={index}>
-        <ProtectedRoutes Component={LayoutTag}/>
+        <ProtectedRoutes Component={LayoutPaths}/>
         <LayoutTag layout={layout} setLayout={setLayout} transition={transition} routerProps={routerProps} setLastLayout={setLastLayout} setTransition={setTransition} currentActiveItem={currentActiveItem} >
             <Switch>
               {LayoutRoutes.map(route => {
